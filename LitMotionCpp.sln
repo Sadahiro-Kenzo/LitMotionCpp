@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35312.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LitMotionCpp", "LitMotionCpp\LitMotionCpp.vcxproj", "{9CAA5961-61D9-4413-B809-6AA2B0D7CDE0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LitMotionCppTest", "LitMotionCppTest\LitMotionCppTest.vcxproj", "{DB3C97DD-D857-4F54-8855-B6ABC9772A70}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9CAA5961-61D9-4413-B809-6AA2B0D7CDE0}.Debug|x64.ActiveCfg = Debug|x64
+		{9CAA5961-61D9-4413-B809-6AA2B0D7CDE0}.Debug|x64.Build.0 = Debug|x64
+		{9CAA5961-61D9-4413-B809-6AA2B0D7CDE0}.Debug|x86.ActiveCfg = Debug|Win32
+		{9CAA5961-61D9-4413-B809-6AA2B0D7CDE0}.Debug|x86.Build.0 = Debug|Win32
+		{9CAA5961-61D9-4413-B809-6AA2B0D7CDE0}.Release|x64.ActiveCfg = Release|x64
+		{9CAA5961-61D9-4413-B809-6AA2B0D7CDE0}.Release|x64.Build.0 = Release|x64
+		{9CAA5961-61D9-4413-B809-6AA2B0D7CDE0}.Release|x86.ActiveCfg = Release|Win32
+		{9CAA5961-61D9-4413-B809-6AA2B0D7CDE0}.Release|x86.Build.0 = Release|Win32
+		{DB3C97DD-D857-4F54-8855-B6ABC9772A70}.Debug|x64.ActiveCfg = Debug|x64
+		{DB3C97DD-D857-4F54-8855-B6ABC9772A70}.Debug|x64.Build.0 = Debug|x64
+		{DB3C97DD-D857-4F54-8855-B6ABC9772A70}.Debug|x86.ActiveCfg = Debug|Win32
+		{DB3C97DD-D857-4F54-8855-B6ABC9772A70}.Debug|x86.Build.0 = Debug|Win32
+		{DB3C97DD-D857-4F54-8855-B6ABC9772A70}.Release|x64.ActiveCfg = Release|x64
+		{DB3C97DD-D857-4F54-8855-B6ABC9772A70}.Release|x64.Build.0 = Release|x64
+		{DB3C97DD-D857-4F54-8855-B6ABC9772A70}.Release|x86.ActiveCfg = Release|Win32
+		{DB3C97DD-D857-4F54-8855-B6ABC9772A70}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1F4BDF82-2B1A-46A0-9435-212EF80575C7}
+	EndGlobalSection
+EndGlobal
