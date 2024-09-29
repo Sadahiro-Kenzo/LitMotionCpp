@@ -5,7 +5,7 @@
 namespace LitMotionCpp
 {
 	template<>
-	float evaluate<float>(const float startValue, const float endValue, const MotionEvaluationContext& context)
+	float evaluate<float>(const float& startValue, const float& endValue, const MotionEvaluationContext& context)
 	{
 		return std::lerp(startValue, endValue, context.Progress);
 	}

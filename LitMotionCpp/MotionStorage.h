@@ -68,7 +68,7 @@ namespace LitMotionCpp
 			,m_callbacksArray{InitialCapacity}
 			, m_tail{ 0 }
 		{
-
+			m_toEntryIndex.resize(InitialCapacity);
 		}
 
 		int getStorageId() { return m_storageId; }

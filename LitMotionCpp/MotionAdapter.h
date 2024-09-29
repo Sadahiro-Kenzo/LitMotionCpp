@@ -15,7 +15,7 @@ namespace LitMotionCpp
 	* @brief Implement this template to define animating values of a particular type.
 	*/
 	template<typename TValue>
-	TValue evaluate(const TValue startValue,const TValue endValue, const MotionEvaluationContext& context)
+	TValue evaluate(const TValue& startValue,const TValue& endValue, const MotionEvaluationContext& context)
 	{
 		return TValue{};
 	}

@@ -146,6 +146,7 @@
     <ClInclude Include="EaseUtility.h" />
     <ClInclude Include="FastListCore.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="MainLoopMotionScheduler.h" />
     <ClInclude Include="MotionAdapter.h" />
     <ClInclude Include="IMotionScheduler.h" />
     <ClInclude Include="LMotion.h" />
@@ -154,6 +155,7 @@
     <ClInclude Include="MotionBuilder.h" />
     <ClInclude Include="MotionCallbackData.h" />
     <ClInclude Include="MotionData.h" />
+    <ClInclude Include="MotionDispatcher.h" />
     <ClInclude Include="MotionHandle.h" />
     <ClInclude Include="MotionScheduler.h" />
     <ClInclude Include="MotionStatus.h" />
@@ -165,9 +167,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EaseUtility.cpp" />
-    <ClCompile Include="LMotion.cpp" />
     <ClCompile Include="ManualMotionDispatcher.cpp" />
     <ClCompile Include="MotionData.cpp" />
+    <ClCompile Include="MotionDispatcher.cpp" />
     <ClCompile Include="MotionHandle.cpp" />
     <ClCompile Include="MotionStorage.cpp" />
     <ClCompile Include="MotionStorageManager.cpp" />

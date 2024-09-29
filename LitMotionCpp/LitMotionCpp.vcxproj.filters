@@ -72,15 +72,18 @@
     <ClInclude Include="PrimitiveMotionAdapter.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="MotionDispatcher.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="MainLoopMotionScheduler.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="ManualMotionDispatcher.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="LMotion.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="MotionHandle.cpp">
@@ -99,6 +102,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="PrimitiveMotionAdapter.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="MotionDispatcher.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

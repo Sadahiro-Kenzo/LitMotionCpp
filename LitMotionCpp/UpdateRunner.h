@@ -39,13 +39,13 @@ namespace LitMotionCpp
 
 		}
 
-		virtual void update(double time, double unscaledTime, double realTime) override
+		virtual void update(double timeParameter, double unscaledTime, double realTime) override
 		{
 			//	update data
-			const auto DeltaTime = time - m_prevTime;
+			const auto DeltaTime = timeParameter - m_prevTime;
 			const auto UnscaledDeltaTime = unscaledTime - m_prevUnscaleTime;
 			const auto RealDeltaTime = realTime - m_prevRealtime;
-			m_prevTime = time;
+			m_prevTime = timeParameter;
 			m_prevUnscaleTime = unscaledTime;
 			m_prevRealtime = realTime;
 
@@ -104,6 +104,7 @@ namespace LitMotionCpp
 						{
 							completedLoops = static_cast<int>(std::floor(motionTime / motionData.Core.Delay));
 							clampedCompletedLoops = motionData.Core.Loops < 0 ? std::max(0, completedLoops) : std::clamp(completedLoops, 0, motionData.Core.Loops);
+							isCompleted = motionData.Core.Loops >= 0 && clampedCompletedLoops > motionData.Core.Loops - 1;
 							isDelayed = !isCompleted;
 							t = isCompleted ? 1.0 : 0.0;
 						}
@@ -169,7 +170,11 @@ namespace LitMotionCpp
 						progress = getEasedValue(motionData.Core, 1.0f) * clampedCompletedLoops + getEasedValue(motionData.Core, static_cast<float>(std::fmod(t, 1.0)));
 						break;
 					}
-					default:assert(false); break;
+					default:
+					{
+						progress = 1.0f;
+						assert(false); break;
+					}
 					}
 
 					auto totalDuration = motionData.Core.DelayType == DelayType::FirstLoop

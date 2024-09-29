@@ -16,6 +16,6 @@ namespace LitMotionCpp
 	template<typename TValue>
 	struct MotionCallbackData:public MotionCallbackDataCore
 	{
-		std::function<void(TValue)> UpdateAction;
+		std::function<void(TValue&)> UpdateAction;
 	};
 }//namespace

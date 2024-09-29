@@ -3,5 +3,5 @@
 
 namespace LitMotionCpp
 {
-	template<> float evaluate(const float, const float, const MotionEvaluationContext&);
+	template<> float evaluate(const float&, const float&, const MotionEvaluationContext&);
 }//namespace

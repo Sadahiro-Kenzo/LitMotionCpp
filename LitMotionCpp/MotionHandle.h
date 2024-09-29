@@ -8,7 +8,7 @@ namespace LitMotionCpp
 	{
 		MotionHandle() = default;
 		MotionHandle(const MotionHandle&) = default;
-		~MotionHandle();
+		~MotionHandle() = default;
 
 		/**
 		* @brief The ID of motion storage.

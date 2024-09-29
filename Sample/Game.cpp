@@ -9,10 +9,14 @@
 #include "PrimitiveBatch.h"
 #include "CommonStates.h"
 #include "ResourceUploadBatch.h"
+#include "Sample_0_CreateAndBind.h"
+#include <LMotion.h>
 
 extern void ExitGame() noexcept;
 
 using namespace DirectX;
+using namespace LitMotionCpp;
+using namespace LitMotionCpp::Sample;
 
 using Microsoft::WRL::ComPtr;
 
@@ -30,6 +34,8 @@ Game::Game() noexcept(false)
     //   Add DX::DeviceResources::c_EnableHDR for HDR10 display.
     //   Add DX::DeviceResources::c_ReverseDepth to optimize depth buffer clears for 0 instead of 1.
     m_deviceResources->RegisterDeviceNotify(this);
+
+    m_quadPositions.fill(VertexPositionColor{});
 }
 
 Game::~Game()
@@ -90,12 +96,14 @@ void Game::Initialize(HWND window, int width, int height)
         CommonStates::Opaque,
         CommonStates::DepthDefault,
         CommonStates::CullNone,
-        rtState,
-        D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE);
+        rtState);
 
     m_primitiveEffect = std::make_unique<BasicEffect>(m_deviceResources->GetD3DDevice(), EffectFlags::VertexColor, pd);
     GetDefaultSize(width, height);
     m_primitiveEffect->SetProjection(XMMatrixOrthographicOffCenterRH(0, width, height, 0, 0, 1));
+
+    m_createAndBind = std::make_unique<Sample_0_CreateAndBind>();
+    m_createAndBind->onStart();
 }
 
 #pragma region Frame Update
@@ -118,7 +126,8 @@ void Game::Update(DX::StepTimer const& timer)
     float elapsedTime = float(timer.GetElapsedSeconds());
 
     // TODO: Add your game logic here.
-    elapsedTime;
+    MotionDispatcher::setTime(timer.GetTotalSeconds());
+    MotionDispatcher::update();
 
     PIXEndEvent();
 }
@@ -142,37 +151,12 @@ void Game::Render()
     PIXBeginEvent(commandList, PIX_COLOR_DEFAULT, L"Render");
 
     // TODO: Add your rendering code here.
-    //  Draw Line Test
-    m_primitiveEffect->Apply(commandList);
-
-    m_primitiveBatch->Begin(commandList);
-    VertexPositionColor p1;
-    p1.position.x = 0.0f;
-    p1.position.y = 0.0f;
-    p1.position.z = 0.0f;
-    p1.color.x = 1.0f;
-    p1.color.y = 1.0f;
-    p1.color.z = 1.0f;
-    p1.color.w = 1.0f;
-    VertexPositionColor p2;
-    p2.position.x = 800.0f;
-    p2.position.y = 600.0f;
-    p2.position.z = 0.0f;
-    p2.color.x = 1.0f;
-    p2.color.y = 1.0f;
-    p2.color.z = 1.0f;
-    p2.color.w = 1.0f;
-    m_primitiveBatch->DrawLine(p1, p2);
-    m_primitiveBatch->End();
-
-    //  Draw Text Test
     ID3D12DescriptorHeap* heaps[] = { m_resourceDescriptors->Heap() };
     commandList->SetDescriptorHeaps(static_cast<UINT>(std::size(heaps)), heaps);
-
     m_spriteBatch->SetViewport(m_deviceResources->GetScreenViewport());
-    m_spriteBatch->Begin(commandList);
-    m_spriteFont->DrawString(m_spriteBatch.get(), "Hello, world!", XMFLOAT2(100.0f, 100.0f));
-    m_spriteBatch->End();
+
+    //  Draw Scene
+    m_createAndBind->onDraw(*this);
 
     PIXEndEvent(commandList);
 
@@ -197,7 +181,7 @@ void Game::Clear()
     auto const dsvDescriptor = m_deviceResources->GetDepthStencilView();
 
     commandList->OMSetRenderTargets(1, &rtvDescriptor, FALSE, &dsvDescriptor);
-    commandList->ClearRenderTargetView(rtvDescriptor, Colors::CornflowerBlue, 0, nullptr);
+    commandList->ClearRenderTargetView(rtvDescriptor, Colors::White, 0, nullptr);
     commandList->ClearDepthStencilView(dsvDescriptor, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
     // Set the viewport and scissor rect.
@@ -306,5 +290,62 @@ void Game::OnDeviceRestored()
     CreateDeviceDependentResources();
 
     CreateWindowSizeDependentResources();
+}
+#pragma endregion
+
+#pragma region IInput
+bool Game::pressedUp()
+{
+    return false;
+}
+
+bool Game::pressedDown()
+{
+    return false;
+}
+bool Game::pressedSpace()
+{
+    return false;
+}
+#pragma endregion
+
+#pragma region IRenderer
+void Game::drawSprite(Sprite& sprite)
+{
+    constexpr float width = 32.0f;
+    constexpr float height = 32.0f;
+
+    XMFLOAT3 position{ sprite.X-width/2.0f,sprite.Y-height/2.0f,0.0f };
+
+    m_quadPositions[0].position = position;
+    m_quadPositions[0].color = sprite.Color;
+
+    position.x += width;
+    m_quadPositions[1].position = position;
+    m_quadPositions[1].color = sprite.Color;
+
+    position.y += height;
+    m_quadPositions[2].position = position;
+    m_quadPositions[2].color = sprite.Color;
+
+    position.x -= width;
+    m_quadPositions[3].position = position;
+    m_quadPositions[3].color = sprite.Color;
+
+    auto commandList = m_deviceResources->GetCommandList();
+    m_primitiveEffect->Apply(commandList);
+
+    m_primitiveBatch->Begin(commandList);
+    m_primitiveBatch->DrawQuad(m_quadPositions[0], m_quadPositions[1], m_quadPositions[2], m_quadPositions[3]);
+    m_primitiveBatch->End();
+}
+
+void Game::drawText(float x, float y, const char* text)
+{
+    auto commandList = m_deviceResources->GetCommandList();
+
+    m_spriteBatch->Begin(commandList);
+    m_spriteFont->DrawString(m_spriteBatch.get(), text, XMFLOAT2(x, y),Colors::Black);
+    m_spriteBatch->End();
 }
 #pragma endregion

@@ -13,6 +13,8 @@ namespace LitMotionCpp
 	private:
 		template<typename TValue>
 		static std::shared_ptr<IMotionScheduler<TValue>> m_manualMotionScheduler;
+		template<typename TValue>
+		static std::shared_ptr<IMotionScheduler<TValue>> m_defaultMotionScheduler;
 	public:
 		template<typename TValue>
 		static std::weak_ptr<IMotionScheduler<TValue>> getManual()
@@ -24,10 +26,21 @@ namespace LitMotionCpp
 
 			return m_manualMotionScheduler<TValue>;
 		}
+
+		template<typename TValue>
+		static void setDefault(std::shared_ptr<IMotionScheduler<TValue>> scheduler)
+		{
+			m_defaultMotionScheduler<TValue> = scheduler;
+		}
+		template<typename TValue>
+		static std::weak_ptr<IMotionScheduler<TValue>> getDefault() { return m_defaultMotionScheduler<TValue>; }
 	};
 
 	template<typename TValue>
 	std::shared_ptr<IMotionScheduler<TValue>> MotionScheduler::m_manualMotionScheduler;
+
+	template<typename TValue>
+	std::shared_ptr<IMotionScheduler<TValue>> MotionScheduler::m_defaultMotionScheduler;
 
 }//namespace
 

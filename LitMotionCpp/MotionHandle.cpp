@@ -4,14 +4,6 @@
 
 namespace LitMotionCpp
 {
-	MotionHandle::~MotionHandle()
-	{
-		if (isActive())
-		{
-			cancel();
-		}
-	}
-
 	bool MotionHandle::isActive()
 	{
 		return MotionStorageManager::isActive(*this);
