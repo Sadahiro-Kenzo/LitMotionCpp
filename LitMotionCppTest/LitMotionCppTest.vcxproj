@@ -115,6 +115,7 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BindOnScheduleTest.cpp" />
     <ClCompile Include="BindTest.cpp" />
     <ClCompile Include="FastListCoreTest.cpp" />
     <ClCompile Include="ManualUpdateTest.cpp" />

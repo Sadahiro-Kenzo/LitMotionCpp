@@ -29,6 +29,18 @@ namespace LitMotionCpp
 			m_motionData.EndValue = to;
 			m_motionData.Core.Duration = duration;
 		}
+		/**
+		* @brief Bind values when scheduling the motion.
+		* 
+		* @param [in] bindOnSchedule : Whether to bind on sheduling
+		* 
+		* @return This builder to allow chaining multiple method calls.
+		*/
+		MotionBuilder& withBindOnSchedule(bool bindOnSchedule = true)
+		{
+			m_bindOnSchedule = bindOnSchedule;
+			return *this;
+		}
 		MotionBuilder& withScheduler(std::weak_ptr<IMotionScheduler<TValue>> scheduler)
 		{
 			m_scheduler = scheduler;
