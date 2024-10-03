@@ -29,7 +29,7 @@ namespace LitMotionCpp
 		virtual void cancel(const MotionHandle&) = 0;
 		virtual void complete(const MotionHandle&) = 0;
 		virtual MotionDataCore& getDataRef(const MotionHandle&) = 0;
-		virtual MotionCallbackDataCore& getCallbackDataRef(const MotionHandle&) = 0;
+		virtual MotionCallbackData& getCallbackDataRef(const MotionHandle&) = 0;
 	};
 
 	class StorageEntryList final
@@ -57,7 +57,7 @@ namespace LitMotionCpp
 		StorageEntryList m_entries;
 		std::vector<int> m_toEntryIndex;
 		std::vector<MotionData<TValue>> m_dataArray;
-		std::vector<MotionCallbackData<TValue>> m_callbacksArray;
+		std::vector<MotionCallbackData> m_callbacksArray;
 		int m_tail;
 	public:
 		MotionStorage(int id)
@@ -77,12 +77,12 @@ namespace LitMotionCpp
 		{
 			return std::span<MotionData<TValue>>(m_dataArray.begin(), m_tail);
 		};
-		std::span<MotionCallbackData<TValue>> getCallbacksSpan()
+		std::span<MotionCallbackData> getCallbacksSpan()
 		{
-			return std::span<MotionCallbackData<TValue>>(m_callbacksArray.begin(), m_tail);
+			return std::span<MotionCallbackData>(m_callbacksArray.begin(), m_tail);
 		};
 
-		std::tuple<int, int> append(const MotionData<TValue>& data, const MotionCallbackData<TValue>& callbacks)
+		std::tuple<int, int> append(const MotionData<TValue>& data, const MotionCallbackData& callbacks)
 		{
 			if (m_tail == m_dataArray.size())
 			{
@@ -213,7 +213,7 @@ namespace LitMotionCpp
 			MotionEvaluationContext context{ easedEndProgress };
 			auto endValue = evaluate(motion.StartValue, motion.EndValue, context);
 
-			callbackData.UpdateAction(endValue);
+			callbackData.invoke(endValue);
 			if (callbackData.OnCompleteAction)
 			{
 				callbackData.OnCompleteAction();
@@ -227,7 +227,7 @@ namespace LitMotionCpp
 			return m_dataArray[m_entries[handle.Index].DenseIndex].Core;
 		}
 
-		virtual MotionCallbackDataCore& getCallbackDataRef(const MotionHandle& handle) override
+		virtual MotionCallbackData& getCallbackDataRef(const MotionHandle& handle) override
 		{
 			return m_callbacksArray[m_entries[handle.Index].DenseIndex];
 		}

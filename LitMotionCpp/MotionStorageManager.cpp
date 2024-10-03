@@ -56,7 +56,7 @@ namespace LitMotionCpp
 		return s_storageList[handle.StorageId].lock()->getDataRef(handle);
 	}
 
-	MotionCallbackDataCore& MotionStorageManager::getMotionCallbackDataRef(const MotionHandle& handle)
+	MotionCallbackData& MotionStorageManager::getMotionCallbackDataRef(const MotionHandle& handle)
 	{
 		checkStorageId(handle);
 		return s_storageList[handle.StorageId].lock()->getCallbackDataRef(handle);

@@ -211,16 +211,16 @@ namespace LitMotionCpp
 			for (int index = 0; index < callbackSpan.size(); index++)
 			{
 				MotionData<TValue>& motionData = dataSpan[index];
-				MotionCallbackData<TValue>& callbackData = callbackSpan[index];
+				MotionCallbackData& callbackData = callbackSpan[index];
 
 				auto status = motionData.Core.Status;
 				if (status == MotionStatus::Playing || (status == MotionStatus::Delayed && !callbackData.SkipValuesDuringDelay))
 				{
-					callbackData.UpdateAction(output[index]);
+					callbackData.invoke(output[index]);
 				}
 				else if (status == MotionStatus::Completed)
 				{
-					callbackData.UpdateAction(output[index]);
+					callbackData.invoke(output[index]);
 
 					if (callbackData.OnCompleteAction)
 					{

@@ -22,7 +22,7 @@ namespace LitMotionCpp::Sample
 	void Sample_0_CreateAndBind::onStart()
 	{
 		LMotion::Create(100.0f, 700.0f, 5.0f)
-			.bind([this](float x) {this->m_targetTransform.X = x+16.0f; });
+			.bindWithState<Sprite>(&m_targetTransform,[](float x,Sprite* target) {target->X = x+16.0f; });
 
 		XMFLOAT4 red{ 1.0f,0.0f,0.0f,1.0f };
 		XMFLOAT4 blue{ 0.0f,0.0f,1.0f,1.0f };

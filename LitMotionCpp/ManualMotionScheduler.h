@@ -8,7 +8,7 @@ namespace LitMotionCpp
 	class ManualMotionScheduler:public IMotionScheduler<TValue>
 	{
 	public:
-		virtual MotionHandle schedule(const MotionData<TValue>& data, const MotionCallbackData<TValue>& callbackData) override
+		virtual MotionHandle schedule(const MotionData<TValue>& data, const MotionCallbackData& callbackData) override
 		{
 			return ManualMotionDispatcher::schedule<TValue>(data, callbackData);
 		}

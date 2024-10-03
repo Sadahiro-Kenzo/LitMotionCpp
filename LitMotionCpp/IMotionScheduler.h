@@ -15,7 +15,7 @@ namespace LitMotionCpp
 		IMotionScheduler() = default;
 		virtual ~IMotionScheduler() = default;
 
-		virtual MotionHandle schedule(const MotionData<TValue>&,const MotionCallbackData<TValue>&) = 0;
+		virtual MotionHandle schedule(const MotionData<TValue>&,const MotionCallbackData&) = 0;
 
 		virtual double getTime() = 0;
 	};

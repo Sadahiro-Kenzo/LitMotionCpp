@@ -16,7 +16,7 @@ namespace LitMotionCpp
 			,m_timeKind(timeKind)
 		{}
 
-		virtual MotionHandle schedule(const MotionData<TValue>& data, const MotionCallbackData<TValue>& callbackData) override
+		virtual MotionHandle schedule(const MotionData<TValue>& data, const MotionCallbackData& callbackData) override
 		{
 			return MotionDispatcher::schedule<TValue>(data, callbackData,m_loopTiming);
 		}

@@ -81,7 +81,7 @@ namespace LitMotionCpp
 		static void clear();
 
 		template<typename TValue>
-		static MotionHandle schedule(const MotionData<TValue>& data, const MotionCallbackData<TValue>& callbackData,int looptiming)
+		static MotionHandle schedule(const MotionData<TValue>& data, const MotionCallbackData& callbackData,int looptiming)
 		{
 			auto storage = StorageCache<TValue>::getOrCreate(looptiming);
 			RunnerCache<TValue>::getOrCreate(looptiming,storage);

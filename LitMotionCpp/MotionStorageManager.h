@@ -5,7 +5,7 @@ namespace LitMotionCpp
 {
 	class IMotionStorage;
 	struct MotionDataCore;
-	struct MotionCallbackDataCore;
+	class MotionCallbackData;
 	struct MotionHandle;
 
 	class MotionStorageManager
@@ -17,7 +17,7 @@ namespace LitMotionCpp
 		static void cancelMotion(const MotionHandle&);
 		static bool isActive(const MotionHandle&);
 		static MotionDataCore& getMotionDataRef(const MotionHandle&);
-		static MotionCallbackDataCore& getMotionCallbackDataRef(const MotionHandle&);
+		static MotionCallbackData& getMotionCallbackDataRef(const MotionHandle&);
 	};
 
 }//namespace

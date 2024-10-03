@@ -56,7 +56,7 @@ namespace LitMotionCpp
 		static void reset();
 
 		template<typename TValue>
-		static MotionHandle schedule(const MotionData<TValue>& data, const MotionCallbackData<TValue>& callbackData)
+		static MotionHandle schedule(const MotionData<TValue>& data, const MotionCallbackData& callbackData)
 		{
 			auto storage = Cache<TValue>::getOrCreate();
 			if (!Cache<TValue>::updateRunner)
