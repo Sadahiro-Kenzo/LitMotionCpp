@@ -1,6 +1,7 @@
 #pragma once
 #include <array>
 #include "Interfaces.h"
+#include "Sprite.h"
 
 namespace LitMotionCpp::Sample
 {

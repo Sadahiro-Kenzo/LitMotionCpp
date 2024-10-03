@@ -68,7 +68,7 @@ void Game::Initialize(HWND window, int width, int height)
 
     //  create spritefont file path
     std::array<CHAR, MAX_PATH> pathBuffer;
-    ::GetModuleFileNameA(nullptr, pathBuffer.data(), pathBuffer.size());
+    ::GetModuleFileNameA(nullptr, pathBuffer.data(), static_cast<DWORD>(pathBuffer.size()));
     std::filesystem::path path{ pathBuffer.data() };
     path.remove_filename();
     path /= "sample.spritefont";
@@ -100,7 +100,7 @@ void Game::Initialize(HWND window, int width, int height)
 
     m_primitiveEffect = std::make_unique<BasicEffect>(m_deviceResources->GetD3DDevice(), EffectFlags::VertexColor, pd);
     GetDefaultSize(width, height);
-    m_primitiveEffect->SetProjection(XMMatrixOrthographicOffCenterRH(0, width, height, 0, 0, 1));
+    m_primitiveEffect->SetProjection(XMMatrixOrthographicOffCenterRH(0, static_cast<float>(width), static_cast<float>(height), 0, 0, 1));
 
     m_createAndBind = std::make_unique<Sample_0_CreateAndBind>();
     m_createAndBind->onStart();
@@ -123,7 +123,7 @@ void Game::Update(DX::StepTimer const& timer)
 {
     PIXBeginEvent(PIX_COLOR_DEFAULT, L"Update");
 
-    float elapsedTime = float(timer.GetElapsedSeconds());
+    //float elapsedTime = float(timer.GetElapsedSeconds());
 
     // TODO: Add your game logic here.
     MotionDispatcher::setTime(timer.GetTotalSeconds());

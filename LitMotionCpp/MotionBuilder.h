@@ -29,10 +29,8 @@ namespace LitMotionCpp
 		bool m_bindOnSchedule = false;
 	public:
 		MotionBuilder(const TValue& from, const TValue& to, float duration)
+			:m_motionData{from,to,duration}
 		{
-			m_motionData.StartValue = from;
-			m_motionData.EndValue = to;
-			m_motionData.Core.Duration = duration;
 		}
 		/**
 		* @brief Bind values when scheduling the motion.
@@ -129,6 +127,24 @@ namespace LitMotionCpp
 			setMotionData();
 			setCallbackData<TState1,TState2,TState3>(state1,state2,state3, action);
 			return schedule();
+		}
+
+		template<typename TTarget>
+		using PropertyBinder = std::function<MotionHandle(MotionBuilder<TValue>*, TTarget*)>;
+
+		/**
+		* @brief Create motion and bind it to a specific boject property.
+		* 
+		* @tparam TTarget : Type of target
+		* @param [in] propertyBinder : function of bind to target's property
+		* @param [in] target : Motion state
+		* 
+		* @return Handle of the created motion data.
+		*/
+		template<typename TTarget>
+		MotionHandle bindTo(PropertyBinder<TTarget> propertyBinder, TTarget* target)
+		{
+			return propertyBinder(this, target);
 		}
 	private:
 		void setMotionData()

@@ -1,7 +1,9 @@
 #include "pch.h"
+#include <format>
 #include "Sample_0_CreateAndBind.h"
 #include <LMotion.h>
 #include "DirectXMotionAdapter.h"
+#include "SpriteExtensions.h"
 
 using namespace LitMotionCpp;
 using namespace DirectX;
@@ -22,18 +24,19 @@ namespace LitMotionCpp::Sample
 	void Sample_0_CreateAndBind::onStart()
 	{
 		LMotion::Create(100.0f, 700.0f, 5.0f)
-			.bindWithState<Sprite>(&m_targetTransform,[](float x,Sprite* target) {target->X = x+16.0f; });
+			.bindTo<Sprite>(SpriteExtensions::ToX, &m_targetTransform);
 
 		XMFLOAT4 red{ 1.0f,0.0f,0.0f,1.0f };
 		XMFLOAT4 blue{ 0.0f,0.0f,1.0f,1.0f };
 
 		LMotion::Create<XMFLOAT4>(red, blue, 5.0f)
-			.bindWithState<Sprite>(&m_targetColor,[](XMFLOAT4& value,Sprite* target) {target->Color = value; });
+			.bindTo<Sprite>(SpriteExtensions::ToColor, &m_targetColor);
 
 		LMotion::Create(0.0f, 10.0f, 5.0f)
 			.bind([this](float x)
 				{
-					sprintf(this->m_targetText.data(), "%f", x);
+					auto [end, _] = std::format_to_n(this->m_targetText.data(), this->m_targetText.size() - 1, "{}", x);
+					*end = '\0';
 				});
 	}
 

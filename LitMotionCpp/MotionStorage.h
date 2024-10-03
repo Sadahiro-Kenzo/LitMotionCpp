@@ -167,8 +167,7 @@ namespace LitMotionCpp
 			assert(0 <= denseIndex && denseIndex < m_tail);
 
 			auto& motion = getDataSpan()[denseIndex];
-			auto version = entry.Version;
-			assert(0 < version && version == handle.Version && motion.Core.Status != MotionStatus::None);
+			assert(0 < entry.Version && entry.Version == handle.Version && motion.Core.Status != MotionStatus::None);
 
 			motion.Core.Status = MotionStatus::Canceled;
 			auto& callbackData = getCallbacksSpan()[denseIndex];
@@ -185,8 +184,7 @@ namespace LitMotionCpp
 			assert(0 <= denseIndex && denseIndex < m_tail);
 
 			auto& motion = getDataSpan()[denseIndex];
-			auto version = entry.Version;
-			assert(0 < version && version == handle.Version && motion.Core.Status != MotionStatus::None);
+			assert(0 < entry.Version && entry.Version == handle.Version && motion.Core.Status != MotionStatus::None);
 
 			if (motion.Core.Loops < 0)
 			{

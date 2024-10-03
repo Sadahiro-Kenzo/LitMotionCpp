@@ -3,12 +3,7 @@
 
 namespace LitMotionCpp::Sample
 {
-	struct Sprite
-	{
-		float X = 0.0f;
-		float Y = 0.0f;
-		DirectX::XMFLOAT4 Color = DirectX::XMFLOAT4{};
-	};
+	struct Sprite;
 
 	class IInput
 	{

@@ -24,6 +24,8 @@
     <ClInclude Include="Interfaces.h" />
     <ClInclude Include="Sample_0_CreateAndBind.h" />
     <ClInclude Include="DirectXMotionAdapter.h" />
+    <ClInclude Include="Sprite.h" />
+    <ClInclude Include="SpriteExtensions.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -34,6 +36,7 @@
     </ClCompile>
     <ClCompile Include="Sample_0_CreateAndBind.cpp" />
     <ClCompile Include="DirectXMotionAdapter.cpp" />
+    <ClCompile Include="SpriteExtensions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

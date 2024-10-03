@@ -9,9 +9,9 @@ namespace LitMotionCpp
 	class MotionCallbackData
 	{
 	private:
-		void* m_pState1;
-		void* m_pState2;
-		void* m_pState3;
+		void* m_pState1 = nullptr;
+		void* m_pState2 = nullptr;
+		void* m_pState3 = nullptr;
 		std::function<void(void)> m_updateAction;
 		std::function<void(MotionCallbackData*, void*)> m_castToSettedTypeAction;	//!< Cast function for callback.
 	public:

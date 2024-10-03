@@ -20,6 +20,7 @@ namespace LitMotionCpp
 		DelayType DelayType;
 		LoopType LoopType;
 
+		MotionDataCore(float duration);
 		MotionDataCore();
 	};
 
@@ -29,6 +30,22 @@ namespace LitMotionCpp
 		MotionDataCore Core;
 		TValue StartValue;
 		TValue EndValue;
+
+		MotionData(const TValue& startValue, const TValue& endValue,const float duration)
+			:Core{duration}
+			, StartValue{ startValue }
+			, EndValue{ endValue }
+		{
+
+		}
+
+		MotionData()
+			:Core{}
+			,StartValue{}
+			,EndValue{}
+		{
+
+		}
 	};
 
 }//namespace
