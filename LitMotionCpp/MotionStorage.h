@@ -13,6 +13,8 @@
 
 namespace LitMotionCpp
 {
+	extern void invokeUnhandledExceptionHandler(std::exception&);
+
 	struct StorageEntry
 	{
 		int Next = -1;
@@ -193,7 +195,14 @@ namespace LitMotionCpp
 			}
 
 			auto& callbackData = getCallbacksSpan()[denseIndex];
+#if defined(LIT_MOTION_CPP_ENABLE_EXCEPTION)
+			if (callbackData.IsCallbackRunning)
+			{
+				throw std::runtime_error{"Recursion of Complete call was detected."};
+			}
+#else
 			assert(!callbackData.IsCallbackRunning);
+#endif
 			callbackData.IsCallbackRunning = true;
 
 			// To avoid duplication of Complete processing, it is treated as canceled internally.
@@ -211,12 +220,34 @@ namespace LitMotionCpp
 			MotionEvaluationContext context{ easedEndProgress };
 			auto endValue = evaluate(motion.StartValue, motion.EndValue, context);
 
+#ifdef LIT_MOTION_CPP_ENABLE_EXCEPTION
+			try
+			{
+				callbackData.invoke(endValue);
+			}
+			catch (std::exception& exception)
+			{
+				invokeUnhandledExceptionHandler(exception);
+			}
+
+			if (callbackData.OnCompleteAction)
+			{
+				try
+				{
+					callbackData.OnCompleteAction();
+				}
+				catch (std::exception& exception)
+				{
+					invokeUnhandledExceptionHandler(exception);
+				}
+			}
+#else
 			callbackData.invoke(endValue);
 			if (callbackData.OnCompleteAction)
 			{
 				callbackData.OnCompleteAction();
 			}
-
+#endif
 			callbackData.IsCallbackRunning = false;
 		}
 

@@ -66,7 +66,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>X64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>LIT_MOTION_CPP_ENABLE_EXCEPTION;X64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -117,6 +117,7 @@
   <ItemGroup>
     <ClCompile Include="BindOnScheduleTest.cpp" />
     <ClCompile Include="BindTest.cpp" />
+    <ClCompile Include="CallbackTest.cpp" />
     <ClCompile Include="FastListCoreTest.cpp" />
     <ClCompile Include="ManualUpdateTest.cpp" />
     <ClCompile Include="MotionHandleTest.cpp" />

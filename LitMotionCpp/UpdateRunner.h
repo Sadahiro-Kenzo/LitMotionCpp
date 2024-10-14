@@ -9,6 +9,8 @@
 
 namespace LitMotionCpp
 {
+	extern void invokeUnhandledExceptionHandler(std::exception&);
+
 	class IUpdateRunner
 	{
 	public:
@@ -214,6 +216,59 @@ namespace LitMotionCpp
 				MotionCallbackData& callbackData = callbackSpan[index];
 
 				auto status = motionData.Core.Status;
+#ifdef LIT_MOTION_CPP_ENABLE_EXCEPTION
+				if (status == MotionStatus::Playing || (status == MotionStatus::Delayed && !callbackData.SkipValuesDuringDelay))
+				{
+					try
+					{
+						callbackData.invoke(output[index]);
+					}
+					catch(std::exception& exception)
+					{
+						invokeUnhandledExceptionHandler(exception);
+						if (callbackData.CancelOnError)
+						{
+							motionData.Core.Status = MotionStatus::Canceled;
+							if (callbackData.OnCancelAction)
+							{
+								callbackData.OnCancelAction();
+							}
+						}
+					}
+				}
+				else if (status == MotionStatus::Completed)
+				{
+					try
+					{
+						callbackData.invoke(output[index]);
+					}
+					catch(std::exception& exception)
+					{
+						invokeUnhandledExceptionHandler(exception);
+						if (callbackData.CancelOnError)
+						{
+							motionData.Core.Status = MotionStatus::Canceled;
+							if (callbackData.OnCancelAction)
+							{
+								callbackData.OnCancelAction();
+							}
+							continue;
+						}
+					}
+
+					if (callbackData.OnCompleteAction)
+					{
+						try
+						{
+							callbackData.OnCompleteAction();
+						}
+						catch (std::exception& exception)
+						{
+							invokeUnhandledExceptionHandler(exception);
+						}
+					}
+				}
+#else
 				if (status == MotionStatus::Playing || (status == MotionStatus::Delayed && !callbackData.SkipValuesDuringDelay))
 				{
 					callbackData.invoke(output[index]);
@@ -224,9 +279,10 @@ namespace LitMotionCpp
 
 					if (callbackData.OnCompleteAction)
 					{
-						callbackData.OnCancelAction();
+						callbackData.OnCompleteAction();
 					}
 				}
+#endif
 			}
 
 			storage->removeAll(completedIndex);

@@ -32,6 +32,46 @@ namespace LitMotionCpp
 			:m_motionData{from,to,duration}
 		{
 		}
+
+		/**
+		* @brief Specify the callback when canceled.
+		* 
+		* @param [in] callback : Callback when canceled.
+		* 
+		* @return This builder to allow chaining multiple method calls.
+		*/
+		MotionBuilder& withOnCancel(std::function<void()> callback)
+		{
+			m_callbackData.OnCancelAction = callback;
+			return *this;
+		}
+
+		/**
+		* @brief Specify the callback when playback ends.
+		*
+		* @param [in] callback : Callback when playback ends.
+		*
+		* @return This builder to allow chaining multiple method calls.
+		*/
+		MotionBuilder& withOnComplete(std::function<void()> callback)
+		{
+			m_callbackData.OnCompleteAction = callback;
+			return *this;
+		}
+
+		/**
+		* @brief Cancel Motion when an exception occurs during Bind processing.
+		*
+		* @param [in] cancelOnError : Whether to cancel on error.
+		*
+		* @return This builder to allow chaining multiple method calls.
+		*/
+		MotionBuilder& withCancelOnError(bool cancelOnError=true)
+		{
+			m_callbackData.CancelOnError = cancelOnError;
+			return *this;
+		}
+
 		/**
 		* @brief Bind values when scheduling the motion.
 		* 
@@ -57,6 +97,17 @@ namespace LitMotionCpp
 			m_scheduler = scheduler;
 			return *this;
 		};
+
+		/**
+		* @brief Create motion and play it without binding it to a specific object.
+		* 
+		* @return Handle of the created motion data.
+		*/
+		MotionHandle runWithoutBinding()
+		{
+			setMotionData();
+			return schedule();
+		}
 
 		/**
 		* @brief Create motion and bind it to a specific object, property, etc.

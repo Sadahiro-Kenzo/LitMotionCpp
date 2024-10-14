@@ -1,4 +1,7 @@
 #pragma once
+// If using exception, uncomment this line:
+//#define LIT_MOTION_CPP_ENABLE_EXCEPTION
+
 #include "MotionBuilder.h"
 #include "MotionScheduler.h"
 #include "MainLoopMotionScheduler.h"

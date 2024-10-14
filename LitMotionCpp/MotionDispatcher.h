@@ -100,6 +100,21 @@ namespace LitMotionCpp
 		* @brief update motions. call in main loop.
 		*/
 		static void update();
+
+		/*@
+		* @brief get last exception message.
+		*/
+		static const char* getLastError();
+
+		/**
+		* @brief Set handling of unhandled exceptions. 
+		*/
+		static void registerUnhandledExceptionHandler(std::function<void(std::exception&)> unhandledExceptionHandler);
+
+		/**
+		* @brief  Get handling of unhandled exceptions.
+		*/
+		static std::function<void(std::exception&)> getUnhandledExceptionHandler();
 	};
 
 	template<typename TValue>
