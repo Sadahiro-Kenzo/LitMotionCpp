@@ -10,7 +10,7 @@ TEST(MotionHandleTest, Test_Cancel)
 	auto value = 0.0f;
 	auto endValue = 10.0f;
 
-	auto handle = LMotion::Create(value, endValue, 2.0f)
+	auto handle = LMotion::create(value, endValue, 2.0f)
 		.withScheduler(MotionScheduler::getManual<float>())
 		.bind([&value](float x) {value = x; });
 
@@ -29,7 +29,7 @@ TEST(MotionHandleTest, Test_Completel)
 	auto value = 0.0f;
 	auto endValue = 10.0f;
 
-	auto handle = LMotion::Create(value, endValue, 2.0f)
+	auto handle = LMotion::create(value, endValue, 2.0f)
 		.withScheduler(MotionScheduler::getManual<float>())
 		.bind([&value](float x) {value = x; });
 

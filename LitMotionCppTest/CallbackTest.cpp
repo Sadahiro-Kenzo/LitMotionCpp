@@ -17,7 +17,7 @@ TEST_F(CallbackTest, Test_OnCancel)
 	ManualMotionDispatcher::reset();
 
 	auto canceled = false;
-	auto handle = LMotion::Create(0.0f, 10.0f, 2.0f)
+	auto handle = LMotion::create(0.0f, 10.0f, 2.0f)
 		.withOnCancel([&canceled]() {canceled = true; })
 		.runWithoutBinding();
 
@@ -33,7 +33,7 @@ TEST_F(CallbackTest, Test_OnComplete)
 	ManualMotionDispatcher::reset();
 	
 	auto completed = false;
-	auto handle = LMotion::Create(0.0f, 10.0f, 2.0f)
+	auto handle = LMotion::create(0.0f, 10.0f, 2.0f)
 		.withOnComplete([&completed]() {completed = true; })
 		.runWithoutBinding();
 
@@ -48,12 +48,12 @@ TEST_F(CallbackTest, Test_CreateOnCallback)
 
 	auto created = false;
 	auto completed = false;
-	auto handle = LMotion::Create(0.0f, 10.0f, 1.0f)
+	auto handle = LMotion::create(0.0f, 10.0f, 1.0f)
 		.bind([&created, &completed](float x)
 			{
 				if (x > 5.0f && !created)
 				{
-					LMotion::Create(0.0f, 10.0f, 1.0f)
+					LMotion::create(0.0f, 10.0f, 1.0f)
 						.withOnComplete([&completed]() {completed = true; })
 						.runWithoutBinding();
 					created = true;
@@ -72,7 +72,7 @@ TEST_F(CallbackTest, Test_CompleteOnCallback_Self)
 	try
 	{
 		MotionHandle handle;
-		handle = LMotion::Create(0.0f, 10.0f, 1.0f)
+		handle = LMotion::create(0.0f, 10.0f, 1.0f)
 			.withOnComplete([&handle]() {handle.complete(); })
 			.runWithoutBinding();
 		handle.complete();
@@ -89,10 +89,10 @@ TEST_F(CallbackTest, Test_CompleteOnCallback_CircularReference)
 	{
 		MotionHandle handle1;
 		MotionHandle handle2;
-		handle1 = LMotion::Create(0.0f, 10.0f, 1.0f)
+		handle1 = LMotion::create(0.0f, 10.0f, 1.0f)
 			.withOnComplete([&handle2]() {handle2.complete(); })
 			.runWithoutBinding();
-		handle2 = LMotion::Create(0.0f, 10.0f, 1.0f)
+		handle2 = LMotion::create(0.0f, 10.0f, 1.0f)
 			.withOnComplete([&handle1]() {handle1.complete(); })
 			.runWithoutBinding();
 
@@ -106,8 +106,8 @@ TEST_F(CallbackTest, Test_CompleteOnCallback_CircularReference)
 
 TEST_F(CallbackTest, Test_CompleteOnCallback_Other)
 {
-	auto otherHandle = LMotion::Create(0.0f, 10.0f, 5.0f).runWithoutBinding();
-	LMotion::Create(0.0f, 10.0f, 0.5f)
+	auto otherHandle = LMotion::create(0.0f, 10.0f, 5.0f).runWithoutBinding();
+	LMotion::create(0.0f, 10.0f, 0.5f)
 		.withOnComplete([&otherHandle]() {otherHandle.complete(); })
 		.runWithoutBinding();
 
@@ -119,7 +119,7 @@ TEST_F(CallbackTest, Test_CompleteOnCallback_Other)
 
 TEST_F(CallbackTest, Test_ThorwExceptionInsideCallbck)
 {
-	LMotion::Create(0.0f, 10.0f, 0.5f)
+	LMotion::create(0.0f, 10.0f, 0.5f)
 		.withOnComplete([]() {throw std::exception{ "Test" }; })
 		.runWithoutBinding();
 
@@ -129,7 +129,7 @@ TEST_F(CallbackTest, Test_ThorwExceptionInsideCallbck)
 
 TEST_F(CallbackTest, Test_ThorwExceptionInsideCallbck_ThenCompleteManually)
 {
-	auto handle=LMotion::Create(0.0f, 10.0f, 0.5f)
+	auto handle=LMotion::create(0.0f, 10.0f, 0.5f)
 		.withOnComplete([]() {throw std::exception{ "Test" }; })
 		.runWithoutBinding();
 
@@ -140,7 +140,7 @@ TEST_F(CallbackTest, Test_ThorwExceptionInsideCallbck_ThenCompleteManually)
 TEST_F(CallbackTest, Test_WithCancelOnError)
 {
 	bool completed = false;
-	LMotion::Create(0.0f, 10.0f, 0.5f)
+	LMotion::create(0.0f, 10.0f, 0.5f)
 		.withCancelOnError()
 		.withOnComplete([&completed]() {completed = true; })
 		.bind([](float x) {throw std::exception("Test"); });
@@ -151,7 +151,7 @@ TEST_F(CallbackTest, Test_WithCancelOnError)
 
 TEST_F(CallbackTest, Test_ThorwExceptionInsideBind_ThenCompleteManually)
 {
-	auto handle=LMotion::Create(0.0f, 10.0f, 0.5f)
+	auto handle=LMotion::create(0.0f, 10.0f, 0.5f)
 		.bind([](float x) {throw std::exception("Test"); });
 
 	handle.complete();
@@ -165,7 +165,7 @@ TEST_F(CallbackTest, Test_RegisterUnhandledExceptionHandler)
 	auto defaultHandler = MotionDispatcher::getUnhandledExceptionHandler();
 	MotionDispatcher::registerUnhandledExceptionHandler([&lastError](std::exception& exception) {lastError = exception.what(); });
 
-	LMotion::Create(0.0f, 10.0f, 0.5f)
+	LMotion::create(0.0f, 10.0f, 0.5f)
 		.withOnComplete([]() {throw std::exception{ "Test" }; })
 		.runWithoutBinding();
 

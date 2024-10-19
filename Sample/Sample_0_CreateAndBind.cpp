@@ -23,16 +23,16 @@ namespace LitMotionCpp::Sample
 
 	void Sample_0_CreateAndBind::onStart()
 	{
-		LMotion::Create(100.0f, 700.0f, 5.0f)
+		LMotion::create(100.0f, 700.0f, 5.0f)
 			.bindTo<Sprite>(SpriteExtensions::ToX, &m_targetTransform);
 
 		XMFLOAT4 red{ 1.0f,0.0f,0.0f,1.0f };
 		XMFLOAT4 blue{ 0.0f,0.0f,1.0f,1.0f };
 
-		LMotion::Create<XMFLOAT4>(red, blue, 5.0f)
+		LMotion::create<XMFLOAT4>(red, blue, 5.0f)
 			.bindTo<Sprite>(SpriteExtensions::ToColor, &m_targetColor);
 
-		LMotion::Create(0.0f, 10.0f, 5.0f)
+		LMotion::create(0.0f, 10.0f, 5.0f)
 			.bind([this](float x)
 				{
 					auto [end, _] = std::format_to_n(this->m_targetText.data(), this->m_targetText.size() - 1, "{}", x);

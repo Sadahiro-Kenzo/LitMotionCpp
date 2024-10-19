@@ -21,7 +21,7 @@ TEST(BindTest, Test_Bind_LocalVariable)
 	auto value = 0.0f;
 	auto endValue = 10.0f;
 
-	auto handle = LMotion::Create(0.0f, endValue, 1.0f)
+	auto handle = LMotion::create(0.0f, endValue, 1.0f)
 		.withScheduler(MotionScheduler::getManual<float>())
 		.bind([&value](float x) {value = x; });
 
@@ -37,7 +37,7 @@ TEST(BindTest, Test_BindWithState)
 	TestClass target;
 	auto endValue = 10.0f;
 
-	auto handle = LMotion::Create(0.0f, endValue, 0.5f)
+	auto handle = LMotion::create(0.0f, endValue, 0.5f)
 		.withScheduler(MotionScheduler::getManual<float>())
 		.bindWithState<TestClass>(&target,[](float x,TestClass* pTarget) {pTarget->Value = x; });
 
@@ -54,7 +54,7 @@ TEST(BindTest, Test_BindWithState_2)
 	TestClass target2;
 	auto endValue = 10.0f;
 
-	auto handle = LMotion::Create(0.0f, endValue, 0.5f)
+	auto handle = LMotion::create(0.0f, endValue, 0.5f)
 		.withScheduler(MotionScheduler::getManual<float>())
 		.bindWithState<TestClass,TestClass>(&target1,&target2, [](float x, TestClass* pTarget1,TestClass* pTarget2)
 			{
@@ -77,7 +77,7 @@ TEST(BindTest, Test_BindWithState_3)
 	TestClass target3;
 	auto endValue = 10.0f;
 
-	auto handle = LMotion::Create(0.0f, endValue, 0.5f)
+	auto handle = LMotion::create(0.0f, endValue, 0.5f)
 		.withScheduler(MotionScheduler::getManual<float>())
 		.bindWithState<TestClass, TestClass, TestClass>(&target1,&target2,&target3, [](float x, TestClass* pTarget1, TestClass* pTarget2, TestClass* pTarget3)
 			{
@@ -100,7 +100,7 @@ TEST(BindTest, Test_BindTo)
 	TestClass target;
 	auto endValue = 10.0f;
 
-	auto handle = LMotion::Create(0.0f, endValue, 0.5f)
+	auto handle = LMotion::create(0.0f, endValue, 0.5f)
 		.withScheduler(MotionScheduler::getManual<float>())
 		.bindTo<TestClass>(TestClassValue, &target);
 

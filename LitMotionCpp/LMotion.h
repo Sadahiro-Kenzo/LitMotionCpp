@@ -22,13 +22,13 @@ namespace LitMotionCpp
 		* 
 		* @return Created motion builder
 		*/
-		static MotionBuilder<float> Create(float from, float to, float duration)
+		static MotionBuilder<float> create(float from, float to, float duration)
 		{
-			return Create<float>(from, to, duration);
+			return create<float>(from, to, duration);
 		}
 
 		template<typename TValue>
-		static MotionBuilder<TValue> Create(const TValue& from, const TValue& to, float duration)
+		static MotionBuilder<TValue> create(const TValue& from, const TValue& to, float duration)
 		{
 			return MotionBuilder<TValue>(from, to, duration);
 		}
