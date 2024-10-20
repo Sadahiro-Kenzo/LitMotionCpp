@@ -118,6 +118,7 @@
     <ClCompile Include="BindOnScheduleTest.cpp" />
     <ClCompile Include="BindTest.cpp" />
     <ClCompile Include="CallbackTest.cpp" />
+    <ClCompile Include="DelayTest.cpp" />
     <ClCompile Include="FastListCoreTest.cpp" />
     <ClCompile Include="ManualUpdateTest.cpp" />
     <ClCompile Include="MotionHandleTest.cpp" />

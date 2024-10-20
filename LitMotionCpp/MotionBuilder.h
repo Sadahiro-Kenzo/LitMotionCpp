@@ -34,6 +34,34 @@ namespace LitMotionCpp
 		}
 
 		/**
+		* @brief Specify the delay time when the motion starts.
+		*
+		* @param [in] delay : Delay time (seconds)
+		* @param [in] delayType : Delay type
+		* @param [in] skipValuesDuringDelay : Whether to skip updating values during the delay time.
+		* 
+		* @return This builder to allow chaining multiple method calls.
+		*/
+		MotionBuilder& withDelay(float delay,DelayType delayType=DelayType::FirstLoop,bool skipValuesDuringDelay=true)
+		{
+			m_motionData.Core.Delay = delay;
+			m_motionData.Core.DelayType = delayType;
+			m_callbackData.SkipValuesDuringDelay = skipValuesDuringDelay;
+			return *this;
+		}
+
+		/**
+		* @brief Specify the number of times the motion is repeated. If specified as less than 0, the motion will continue to play until manually completed or canceled.
+		* 
+		* @param [in] loops : Number of loops
+		*/
+		MotionBuilder& withLoops(int loops)
+		{
+			m_motionData.Core.Loops = loops;
+			return *this;
+		}
+
+		/**
 		* @brief Specify the callback when canceled.
 		* 
 		* @param [in] callback : Callback when canceled.
