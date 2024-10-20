@@ -54,10 +54,12 @@ namespace LitMotionCpp
 		* @brief Specify the number of times the motion is repeated. If specified as less than 0, the motion will continue to play until manually completed or canceled.
 		* 
 		* @param [in] loops : Number of loops
+		* @param [in] loopTpe : Behavior at the end of each loop
 		*/
-		MotionBuilder& withLoops(int loops)
+		MotionBuilder& withLoops(int loops,LoopType loopType=LoopType::Restart)
 		{
 			m_motionData.Core.Loops = loops;
+			m_motionData.Core.LoopType = loopType;
 			return *this;
 		}
 
