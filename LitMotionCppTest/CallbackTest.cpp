@@ -3,16 +3,7 @@
 
 using namespace LitMotionCpp;
 
-class CallbackTest :public ::testing::Test
-{
-protected:
-	virtual void SetUp() override
-	{
-		MotionScheduler::setDefault<float>(MotionScheduler::getManual<float>().lock());
-	}
-};
-
-TEST_F(CallbackTest, Test_OnCancel)
+TEST(CallbackTest, Test_OnCancel)
 {
 	ManualMotionDispatcher::reset();
 
@@ -28,7 +19,7 @@ TEST_F(CallbackTest, Test_OnCancel)
 	EXPECT_TRUE(canceled);
 }
 
-TEST_F(CallbackTest, Test_OnComplete)
+TEST(CallbackTest, Test_OnComplete)
 {
 	ManualMotionDispatcher::reset();
 	
@@ -42,7 +33,7 @@ TEST_F(CallbackTest, Test_OnComplete)
 	EXPECT_TRUE(completed);
 }
 
-TEST_F(CallbackTest, Test_CreateOnCallback)
+TEST(CallbackTest, Test_CreateOnCallback)
 {
 	ManualMotionDispatcher::reset();
 
@@ -68,7 +59,7 @@ TEST_F(CallbackTest, Test_CreateOnCallback)
 }
 
 #ifdef LIT_MOTION_CPP_ENABLE_EXCEPTION
-TEST_F(CallbackTest, Test_CompleteOnCallback_Self)
+TEST(CallbackTest, Test_CompleteOnCallback_Self)
 {
 	try
 	{
@@ -84,7 +75,7 @@ TEST_F(CallbackTest, Test_CompleteOnCallback_Self)
 	}
 }
 
-TEST_F(CallbackTest, Test_CompleteOnCallback_CircularReference)
+TEST(CallbackTest, Test_CompleteOnCallback_CircularReference)
 {
 	try
 	{
@@ -105,7 +96,7 @@ TEST_F(CallbackTest, Test_CompleteOnCallback_CircularReference)
 	}
 }
 #else
-TEST_F(CallbackTest, Test_CompleteOnCallback_Self)
+TEST(CallbackTest, Test_CompleteOnCallback_Self)
 {
 	EXPECT_DEATH(
 		{
@@ -117,7 +108,7 @@ TEST_F(CallbackTest, Test_CompleteOnCallback_Self)
 		}, "");
 }
 
-TEST_F(CallbackTest, Test_CompleteOnCallback_CircularReference)
+TEST(CallbackTest, Test_CompleteOnCallback_CircularReference)
 {
 	EXPECT_DEATH(
 		{
@@ -134,7 +125,7 @@ TEST_F(CallbackTest, Test_CompleteOnCallback_CircularReference)
 		}, "");
 }
 #endif
-TEST_F(CallbackTest, Test_CompleteOnCallback_Other)
+TEST(CallbackTest, Test_CompleteOnCallback_Other)
 {
 	auto otherHandle = LMotion::create(0.0f, 10.0f, 5.0f).runWithoutBinding();
 	LMotion::create(0.0f, 10.0f, 0.5f)
@@ -148,7 +139,7 @@ TEST_F(CallbackTest, Test_CompleteOnCallback_Other)
 }
 
 #ifdef LIT_MOTION_CPP_ENABLE_EXCEPTION
-TEST_F(CallbackTest, Test_ThorwExceptionInsideCallbck)
+TEST(CallbackTest, Test_ThorwExceptionInsideCallbck)
 {
 	LMotion::create(0.0f, 10.0f, 0.5f)
 		.withOnComplete([]() {throw std::exception{ "Test" }; })
@@ -158,7 +149,7 @@ TEST_F(CallbackTest, Test_ThorwExceptionInsideCallbck)
 	EXPECT_STREQ("Exception: Test", MotionDispatcher::getLastError());
 }
 
-TEST_F(CallbackTest, Test_ThorwExceptionInsideCallbck_ThenCompleteManually)
+TEST(CallbackTest, Test_ThorwExceptionInsideCallbck_ThenCompleteManually)
 {
 	auto handle=LMotion::create(0.0f, 10.0f, 0.5f)
 		.withOnComplete([]() {throw std::exception{ "Test" }; })
@@ -168,7 +159,7 @@ TEST_F(CallbackTest, Test_ThorwExceptionInsideCallbck_ThenCompleteManually)
 	EXPECT_STREQ("Exception: Test", MotionDispatcher::getLastError());
 }
 
-TEST_F(CallbackTest, Test_WithCancelOnError)
+TEST(CallbackTest, Test_WithCancelOnError)
 {
 	bool completed = false;
 	LMotion::create(0.0f, 10.0f, 0.5f)
@@ -180,7 +171,7 @@ TEST_F(CallbackTest, Test_WithCancelOnError)
 	EXPECT_FALSE(completed);
 }
 
-TEST_F(CallbackTest, Test_ThorwExceptionInsideBind_ThenCompleteManually)
+TEST(CallbackTest, Test_ThorwExceptionInsideBind_ThenCompleteManually)
 {
 	auto handle=LMotion::create(0.0f, 10.0f, 0.5f)
 		.bind([](float x) {throw std::exception("Test"); });
@@ -189,7 +180,7 @@ TEST_F(CallbackTest, Test_ThorwExceptionInsideBind_ThenCompleteManually)
 	EXPECT_STREQ("Exception: Test", MotionDispatcher::getLastError());
 }
 
-TEST_F(CallbackTest, Test_RegisterUnhandledExceptionHandler)
+TEST(CallbackTest, Test_RegisterUnhandledExceptionHandler)
 {
 	std::string lastError;
 
@@ -206,7 +197,7 @@ TEST_F(CallbackTest, Test_RegisterUnhandledExceptionHandler)
 	MotionDispatcher::registerUnhandledExceptionHandler(defaultHandler);
 }
 #else
-TEST_F(CallbackTest, Test_ThorwExceptionInsideCallbck)
+TEST(CallbackTest, Test_ThorwExceptionInsideCallbck)
 {
 	EXPECT_THROW(
 		{
@@ -220,7 +211,7 @@ TEST_F(CallbackTest, Test_ThorwExceptionInsideCallbck)
 	);
 }
 
-TEST_F(CallbackTest, Test_ThorwExceptionInsideCallbck_ThenCompleteManually)
+TEST(CallbackTest, Test_ThorwExceptionInsideCallbck_ThenCompleteManually)
 {
 	EXPECT_THROW(
 		{
@@ -234,7 +225,7 @@ TEST_F(CallbackTest, Test_ThorwExceptionInsideCallbck_ThenCompleteManually)
 	);
 }
 
-TEST_F(CallbackTest, Test_WithCancelOnError)
+TEST(CallbackTest, Test_WithCancelOnError)
 {
 	EXPECT_THROW(
 		{
@@ -250,7 +241,7 @@ TEST_F(CallbackTest, Test_WithCancelOnError)
 	);
 }
 
-TEST_F(CallbackTest, Test_ThorwExceptionInsideBind_ThenCompleteManually)
+TEST(CallbackTest, Test_ThorwExceptionInsideBind_ThenCompleteManually)
 {
 	EXPECT_THROW(
 		{
@@ -263,7 +254,7 @@ TEST_F(CallbackTest, Test_ThorwExceptionInsideBind_ThenCompleteManually)
 	);
 }
 
-TEST_F(CallbackTest, Test_RegisterUnhandledExceptionHandler)
+TEST(CallbackTest, Test_RegisterUnhandledExceptionHandler)
 {
 	EXPECT_THROW(
 		{

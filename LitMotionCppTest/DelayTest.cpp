@@ -3,26 +3,17 @@
 
 using namespace LitMotionCpp;
 
-class DelayTest :public ::testing::Test
+static void play(MotionHandle handle)
 {
-protected:
-	virtual void SetUp() override
+	constexpr float delta = 1.0f / 60.0f;
+	ManualMotionDispatcher::update(delta);
+	while (handle.isActive())
 	{
-		MotionScheduler::setDefault<float>(MotionScheduler::getManual<float>().lock());
-	}
-
-	void play(MotionHandle handle)
-	{
-		constexpr float delta = 1.0f / 60.0f;
 		ManualMotionDispatcher::update(delta);
-		while (handle.isActive())
-		{
-			ManualMotionDispatcher::update(delta);
-		}
 	}
-};
+}
 
-TEST_F(DelayTest, Test_Delay)
+TEST(DelayTest, Test_Delay)
 {
 	ManualMotionDispatcher::reset();
 
@@ -36,7 +27,7 @@ TEST_F(DelayTest, Test_Delay)
 	EXPECT_TRUE(0.95<duration && duration<1.1);
 }
 
-TEST_F(DelayTest, Test_Delay_WithZeroDuration)
+TEST(DelayTest, Test_Delay_WithZeroDuration)
 {
 	ManualMotionDispatcher::reset();
 
@@ -50,7 +41,7 @@ TEST_F(DelayTest, Test_Delay_WithZeroDuration)
 	EXPECT_TRUE(0.95 < duration && duration < 1.1);
 }
 
-TEST_F(DelayTest, Test_Delay_EveryLoop)
+TEST(DelayTest, Test_Delay_EveryLoop)
 {
 	ManualMotionDispatcher::reset();
 
@@ -65,7 +56,7 @@ TEST_F(DelayTest, Test_Delay_EveryLoop)
 	EXPECT_TRUE(1.95 < duration && duration < 2.1);
 }
 
-TEST_F(DelayTest, Test_Delay_EveryLoop_WithZeroDuration)
+TEST(DelayTest, Test_Delay_EveryLoop_WithZeroDuration)
 {
 	ManualMotionDispatcher::reset();
 
@@ -80,7 +71,7 @@ TEST_F(DelayTest, Test_Delay_EveryLoop_WithZeroDuration)
 	EXPECT_TRUE(1.45 < duration && duration < 1.6);
 }
 
-TEST_F(DelayTest, Test_Delay_SkipValuesDuringDelay)
+TEST(DelayTest, Test_Delay_SkipValuesDuringDelay)
 {
 	ManualMotionDispatcher::reset();
 

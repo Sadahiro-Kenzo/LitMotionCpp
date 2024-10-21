@@ -10,7 +10,6 @@ TEST(BindOnScheduleTest, Test_BindOnSchedule)
 	auto value = 0.0f;
 
 	auto handle = LMotion::create(1.0f, 0.0f, 1.0f)
-		.withScheduler(MotionScheduler::getManual<float>())
 		.bind([&value](float x) {value = x; });
 
 	handle.cancel();
@@ -21,7 +20,6 @@ TEST(BindOnScheduleTest, Test_BindOnSchedule)
 
 	handle = LMotion::create(1.0f, 0.0f, 1.0f)
 		.withBindOnSchedule()
-		.withScheduler(MotionScheduler::getManual<float>())
 		.bind([&value](float x) {value = x; });
 
 	handle.cancel();

@@ -11,7 +11,6 @@ TEST(MotionHandleTest, Test_Cancel)
 	auto endValue = 10.0f;
 
 	auto handle = LMotion::create(value, endValue, 2.0f)
-		.withScheduler(MotionScheduler::getManual<float>())
 		.bind([&value](float x) {value = x; });
 
 	ManualMotionDispatcher::update(1.0f);
@@ -30,7 +29,6 @@ TEST(MotionHandleTest, Test_Complete)
 	auto endValue = 10.0f;
 
 	auto handle = LMotion::create(value, endValue, 2.0f)
-		.withScheduler(MotionScheduler::getManual<float>())
 		.bind([&value](float x) {value = x; });
 
 	ManualMotionDispatcher::update(1.0f);
@@ -47,7 +45,6 @@ TEST(MotionHandleTest, Test_Complete_WithYoyoLoop)
 	auto value = 0.0f;
 	auto startValue = 0.0f;
 	auto handle = LMotion::create(startValue, 10.0f, 2.0f)
-		.withScheduler(MotionScheduler::getManual<float>())
 		.withLoops(2, LoopType::Yoyo)
 		.bind([&value](float x) {value = x; });
 
@@ -65,7 +62,6 @@ TEST(MotionHandleTest, Test_CompleteAndCancel_WithInfiniteLoop)
 	auto value = 0.0f;
 	auto startValue = 0.0f;
 	auto handle = LMotion::create(startValue, 10.0f, 2.0f)
-		.withScheduler(MotionScheduler::getManual<float>())
 		.withLoops(-1)
 		.bind([&value](float x) {value = x; });
 
@@ -82,7 +78,6 @@ TEST(MotionHandleTest, Test_IsActive)
 	ManualMotionDispatcher::reset();
 
 	auto handle = LMotion::create(0.0f, 10.0f, 2.0f)
-		.withScheduler(MotionScheduler::getManual<float>())
 		.runWithoutBinding();
 
 	EXPECT_TRUE(handle.isActive());
