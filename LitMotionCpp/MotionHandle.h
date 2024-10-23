@@ -26,6 +26,20 @@ namespace LitMotionCpp
 		int Version;
 
 		/**
+		* @brief Set motion playback speed.
+		* 
+		* @param [in] value : playback speed
+		*/
+		void setPlaybackSpeed(float value);
+
+		/**
+		* @brief Get motion playback speed.
+		* 
+		* @return playback speed
+		*/
+		float getPlaybackSpeed();
+
+		/**
 		* @brief Checks if a motion is currently playing.
 		* 
 		* @return True if motion is active, otherwise false. 

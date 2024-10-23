@@ -1,9 +1,27 @@
 #include "pch.h"
 #include "MotionHandle.h"
 #include "MotionStorageManager.h"
+#include "MotionData.h"
+#include "Error.h"
 
 namespace LitMotionCpp
 {
+	void MotionHandle::setPlaybackSpeed(float value)
+	{
+#ifdef _DEBUG
+		if (value < 0.0f)
+		{
+			Error::playbackSpeedMustBeZeroOrGreater();
+		}
+#endif
+		MotionStorageManager::getMotionDataRef(*this).PlaybackSpeed = value;
+	}
+
+	float MotionHandle::getPlaybackSpeed()
+	{
+		return MotionStorageManager::getMotionDataRef(*this).PlaybackSpeed;
+	}
+
 	bool MotionHandle::isActive()
 	{
 		return MotionStorageManager::isActive(*this);

@@ -1,24 +1,15 @@
 #include "pch.h"
 #include <LMotion.h>
+#include "Utility.h"
 
 using namespace LitMotionCpp;
-
-static void play(MotionHandle handle)
-{
-	constexpr float delta = 1.0f / 60.0f;
-	ManualMotionDispatcher::update(delta);
-	while (handle.isActive())
-	{
-		ManualMotionDispatcher::update(delta);
-	}
-}
 
 TEST(DelayTest, Test_Delay)
 {
 	ManualMotionDispatcher::reset();
 
 	auto t = ManualMotionDispatcher::getTime();
-	play(LMotion::create(0.0f, 1.0f, 0.5f)
+	Utility::toYieldInteraction(LMotion::create(0.0f, 1.0f, 0.5f)
 		.withDelay(0.5f)
 		.runWithoutBinding()
 	);
@@ -32,7 +23,7 @@ TEST(DelayTest, Test_Delay_WithZeroDuration)
 	ManualMotionDispatcher::reset();
 
 	auto t = ManualMotionDispatcher::getTime();
-	play(LMotion::create(0.0f, 1.0f, 0.0f)
+	Utility::toYieldInteraction(LMotion::create(0.0f, 1.0f, 0.0f)
 		.withDelay(1.0f)
 		.runWithoutBinding()
 	);
@@ -46,7 +37,7 @@ TEST(DelayTest, Test_Delay_EveryLoop)
 	ManualMotionDispatcher::reset();
 
 	auto t = ManualMotionDispatcher::getTime();
-	play(LMotion::create(0.0f, 1.0f, 0.5f)
+	Utility::toYieldInteraction(LMotion::create(0.0f, 1.0f, 0.5f)
 		.withLoops(2)
 		.withDelay(0.5f,DelayType::EveryLoop)
 		.runWithoutBinding()
@@ -61,7 +52,7 @@ TEST(DelayTest, Test_Delay_EveryLoop_WithZeroDuration)
 	ManualMotionDispatcher::reset();
 
 	auto t = ManualMotionDispatcher::getTime();
-	play(LMotion::create(0.0f, 1.0f, 0.0f)
+	Utility::toYieldInteraction(LMotion::create(0.0f, 1.0f, 0.0f)
 		.withLoops(3)
 		.withDelay(0.5f, DelayType::EveryLoop)
 		.runWithoutBinding()

@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="EaseUtility.h" />
+    <ClInclude Include="Error.h" />
     <ClInclude Include="FastListCore.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MainLoopMotionScheduler.h" />
@@ -167,6 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EaseUtility.cpp" />
+    <ClCompile Include="Error.cpp" />
     <ClCompile Include="ManualMotionDispatcher.cpp" />
     <ClCompile Include="MotionData.cpp" />
     <ClCompile Include="MotionDispatcher.cpp" />
