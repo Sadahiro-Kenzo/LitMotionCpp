@@ -2,7 +2,7 @@
 #include <format>
 #include "Sample_0_CreateAndBind.h"
 #include <LMotion.h>
-#include "DirectXMotionAdapter.h"
+#include "VecmathMotionAdapter.h"
 #include "SpriteExtensions.h"
 
 using namespace LitMotionCpp;
@@ -14,11 +14,11 @@ namespace LitMotionCpp::Sample
 	{
 		m_targetTransform.X = 116.0f;
 		m_targetTransform.Y = 100.0f;
-		m_targetTransform.Color =  XMFLOAT4{ 0.0f,1.0f,1.0f,1.0f };
+		m_targetTransform.Color =  Color4f{ 0.0f,1.0f,1.0f,1.0f };
 
 		m_targetColor.X = 116.0f;
 		m_targetColor.Y = 150.0f;
-		m_targetColor.Color = XMFLOAT4{ 1.0f,0.0f,0.0f,1.0f };
+		m_targetColor.Color = Color4f{ 1.0f,0.0f,0.0f,1.0f };
 	}
 
 	void Sample_0_CreateAndBind::onStart()
@@ -26,10 +26,10 @@ namespace LitMotionCpp::Sample
 		LMotion::create(100.0f, 700.0f, 5.0f)
 			.bindTo<Sprite>(SpriteExtensions::ToX, &m_targetTransform);
 
-		XMFLOAT4 red{ 1.0f,0.0f,0.0f,1.0f };
-		XMFLOAT4 blue{ 0.0f,0.0f,1.0f,1.0f };
+		Color4f red{ 1.0f,0.0f,0.0f,1.0f };
+		Color4f blue{ 0.0f,0.0f,1.0f,1.0f };
 
-		LMotion::create<XMFLOAT4>(red, blue, 5.0f)
+		LMotion::create<Color4f>(red, blue, 5.0f)
 			.bindTo<Sprite>(SpriteExtensions::ToColor, &m_targetColor);
 
 		LMotion::create(0.0f, 10.0f, 5.0f)

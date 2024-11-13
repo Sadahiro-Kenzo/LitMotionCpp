@@ -316,21 +316,22 @@ void Game::drawSprite(Sprite& sprite)
     constexpr float height = 32.0f;
 
     XMFLOAT3 position{ sprite.X-width/2.0f,sprite.Y-height/2.0f,0.0f };
+    XMFLOAT4 color{ sprite.Color.x,sprite.Color.y,sprite.Color.z,sprite.Color.w };
 
     m_quadPositions[0].position = position;
-    m_quadPositions[0].color = sprite.Color;
+    m_quadPositions[0].color = color;
 
     position.x += width;
     m_quadPositions[1].position = position;
-    m_quadPositions[1].color = sprite.Color;
+    m_quadPositions[1].color = color;
 
     position.y += height;
     m_quadPositions[2].position = position;
-    m_quadPositions[2].color = sprite.Color;
+    m_quadPositions[2].color = color;
 
     position.x -= width;
     m_quadPositions[3].position = position;
-    m_quadPositions[3].color = sprite.Color;
+    m_quadPositions[3].color = color;
 
     auto commandList = m_deviceResources->GetCommandList();
     m_primitiveEffect->Apply(commandList);

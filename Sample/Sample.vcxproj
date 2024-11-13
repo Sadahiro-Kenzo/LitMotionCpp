@@ -74,18 +74,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)LitMotionCpp;$(IncludePath)</IncludePath>
+    <ExternalIncludePath>$(ProjectDir)vecmath;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)LitMotionCpp;$(IncludePath)</IncludePath>
+    <ExternalIncludePath>$(ProjectDir)vecmath;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)LitMotionCpp;$(IncludePath)</IncludePath>
+    <ExternalIncludePath>$(ProjectDir)vecmath;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)LitMotionCpp;$(IncludePath)</IncludePath>
+    <ExternalIncludePath>$(ProjectDir)vecmath;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -220,7 +224,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="d3dx12.h" />
-    <ClInclude Include="DirectXMotionAdapter.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Interfaces.h" />
     <ClInclude Include="pch.h" />
@@ -229,9 +232,9 @@
     <ClInclude Include="SpriteExtensions.h" />
     <ClInclude Include="StepTimer.h" />
     <ClInclude Include="DeviceResources.h" />
+    <ClInclude Include="VecmathMotionAdapter.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DirectXMotionAdapter.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="DeviceResources.cpp" />
@@ -243,6 +246,7 @@
     </ClCompile>
     <ClCompile Include="Sample_0_CreateAndBind.cpp" />
     <ClCompile Include="SpriteExtensions.cpp" />
+    <ClCompile Include="VecmathMotionAdapter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

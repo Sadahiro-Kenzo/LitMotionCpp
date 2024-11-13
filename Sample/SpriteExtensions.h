@@ -1,7 +1,7 @@
 #pragma once
 #include <functional>
 #include <LMotion.h>
-#include "DirectXMath.h"
+#include <vecmath.h>
 
 namespace LitMotionCpp::Sample
 {
@@ -13,6 +13,6 @@ namespace LitMotionCpp::Sample
 	struct SpriteExtensions
 	{
 		static MotionBuilder<float>::PropertyBinder<Sprite> ToX;
-		static MotionBuilder<DirectX::XMFLOAT4>::PropertyBinder<Sprite> ToColor;
+		static MotionBuilder<Color4f>::PropertyBinder<Sprite> ToColor;
 	};
 }//namespace

@@ -23,9 +23,9 @@
     </ClInclude>
     <ClInclude Include="Interfaces.h" />
     <ClInclude Include="Sample_0_CreateAndBind.h" />
-    <ClInclude Include="DirectXMotionAdapter.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteExtensions.h" />
+    <ClInclude Include="VecmathMotionAdapter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -35,8 +35,8 @@
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="Sample_0_CreateAndBind.cpp" />
-    <ClCompile Include="DirectXMotionAdapter.cpp" />
     <ClCompile Include="SpriteExtensions.cpp" />
+    <ClCompile Include="VecmathMotionAdapter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

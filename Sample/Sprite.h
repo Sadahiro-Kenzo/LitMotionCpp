@@ -1,5 +1,5 @@
 #pragma once
-#include "DirectXMath.h"
+#include <vecmath.h>
 
 namespace LitMotionCpp::Sample
 {
@@ -10,6 +10,6 @@ namespace LitMotionCpp::Sample
 	{
 		float X = 0.0f;
 		float Y = 0.0f;
-		DirectX::XMFLOAT4 Color = DirectX::XMFLOAT4{};
+		Color4f Color = Color4f{};
 	};
 }//namespace
