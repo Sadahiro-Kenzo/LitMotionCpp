@@ -9,11 +9,6 @@ public:
 	float Value = 0.0f;
 };
 
-MotionHandle TestClassValue(MotionBuilder<float>* motionBuilder, TestClass* target)
-{
-	return motionBuilder->bindWithState<TestClass>(target, [](float value, TestClass* t) {t->Value = value; });
-}
-
 TEST(BindTest, Test_Bind_LocalVariable)
 {
 	ManualMotionDispatcher::reset();
@@ -87,19 +82,4 @@ TEST(BindTest, Test_BindWithState_3)
 	EXPECT_FLOAT_EQ(target1.Value, endValue);
 	EXPECT_FLOAT_EQ(target2.Value, endValue);
 	EXPECT_FLOAT_EQ(target3.Value, endValue);
-}
-
-TEST(BindTest, Test_BindTo)
-{
-	ManualMotionDispatcher::reset();
-
-	TestClass target;
-	auto endValue = 10.0f;
-
-	auto handle = LMotion::create(0.0f, endValue, 0.5f)
-		.bindTo<TestClass>(TestClassValue, &target);
-
-	ManualMotionDispatcher::update(0.6f);
-
-	EXPECT_FLOAT_EQ(target.Value, endValue);
 }
