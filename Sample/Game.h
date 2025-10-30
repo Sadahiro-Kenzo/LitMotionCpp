@@ -6,6 +6,7 @@
 
 #include <array>
 #include <memory>
+#include <vector>
 #include "DeviceResources.h"
 #include "StepTimer.h"
 #include "GraphicsMemory.h"
@@ -15,11 +16,17 @@
 #include "SpriteBatch.h"
 #include "SpriteFont.h"
 #include "DescriptorHeap.h"
+#include "keyboard.h"
 #include "Interfaces.h"
+
+namespace LitMotionCpp::Sample
+{
+	class DX12Canvas;
+}
 
 // A basic game implementation that creates a D3D12 device and
 // provides a game loop.
-class Game final : public DX::IDeviceNotify,LitMotionCpp::Sample::IInput, LitMotionCpp::Sample::IRenderer
+class Game final : public DX::IDeviceNotify,LitMotionCpp::Sample::IInput
 {
 public:
 
@@ -58,15 +65,14 @@ public:
     virtual bool pressedUp() override;
     virtual bool pressedDown() override;
     virtual bool pressedSpace() override;
-
-    // IRenderer
-    virtual void drawSprite(LitMotionCpp::Sample::Sprite& sprite) override;
-    virtual void drawText(float x, float y, const char* text) override;
-
+	virtual bool pressedEscape() override;
 private:
 
     void Update(DX::StepTimer const& timer);
     void Render();
+
+    void drawSprite(LitMotionCpp::Sample::DX12Canvas& canvas);
+    void drawText(LitMotionCpp::Sample::DX12Canvas& canvas);
 
     void Clear();
 
@@ -82,16 +88,22 @@ private:
     // If using the DirectX Tool Kit for DX12, uncomment this line:
     std::unique_ptr<DirectX::GraphicsMemory> m_graphicsMemory;
 
-    std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
-    std::unique_ptr<DirectX::BasicEffect> m_primitiveEffect;
+    //std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
+    //std::unique_ptr<DirectX::BasicEffect> m_primitiveEffect;
 
     std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
     std::unique_ptr<DirectX::SpriteFont> m_spriteFont;
 
     std::unique_ptr<DirectX::DescriptorHeap> m_resourceDescriptors;
 
-    std::array<DirectX::VertexPositionColor,4> m_quadPositions;
+	std::unique_ptr<DirectX::Keyboard> m_keyboard;
+    DirectX::Keyboard::KeyboardStateTracker m_keyboardTracker;
+
+    //std::array<DirectX::VertexPositionColor,4> m_quadPositions;
+
+    Microsoft::WRL::ComPtr<ID3D12Resource> m_circleTexture;
 
     //  sample scene
-    std::unique_ptr<LitMotionCpp::Sample::IScene> m_createAndBind;
+	size_t m_currentScene = 0;
+    std::vector<std::unique_ptr<LitMotionCpp::Sample::IScene>> m_scenes;
 };

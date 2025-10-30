@@ -119,7 +119,7 @@
       <AdditionalOptions>/Fd "$(OutDir)%(Filename).pdb" %(AdditionalOptions)</AdditionalOptions>
     </FXCompile>
     <PostBuildEvent>
-      <Command>copy /Y $(ProjectDir)sample.spritefont  $(SolutionDir)$(Platform)\$(Configuration)</Command>
+      <Command>xcopy /e /i /y $(ProjectDir)Assets  $(SolutionDir)$(Platform)\$(Configuration)\Assets</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -149,7 +149,7 @@
       <AdditionalOptions>/Fd "$(OutDir)%(Filename).pdb" %(AdditionalOptions)</AdditionalOptions>
     </FXCompile>
     <PostBuildEvent>
-      <Command>copy /Y $(ProjectDir)sample.spritefont  $(SolutionDir)$(Platform)\$(Configuration)</Command>
+      <Command>xcopy /e /i /y $(ProjectDir)Assets  $(SolutionDir)$(Platform)\$(Configuration)\Assets</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -184,7 +184,7 @@
       <AdditionalOptions>/Fd "$(OutDir)%(Filename).pdb" %(AdditionalOptions)</AdditionalOptions>
     </FXCompile>
     <PostBuildEvent>
-      <Command>copy /Y $(ProjectDir)sample.spritefont  $(SolutionDir)$(Platform)\$(Configuration)</Command>
+      <Command>xcopy /e /i /y $(ProjectDir)Assets  $(SolutionDir)$(Platform)\$(Configuration)\Assets</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -219,33 +219,55 @@
       <AdditionalOptions>/Fd "$(OutDir)%(Filename).pdb" %(AdditionalOptions)</AdditionalOptions>
     </FXCompile>
     <PostBuildEvent>
-      <Command>copy /Y $(ProjectDir)sample.spritefont  $(SolutionDir)$(Platform)\$(Configuration)</Command>
+      <Command>xcopy /e /i /y $(ProjectDir)Assets  $(SolutionDir)$(Platform)\$(Configuration)\Assets</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="d3dx12.h" />
+    <ClInclude Include="DX12Canvas.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="ICanvas.h" />
     <ClInclude Include="Interfaces.h" />
+    <ClInclude Include="Message.h" />
+    <ClInclude Include="NotifyMemoryLeak.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="SampleScene.h" />
+    <ClInclude Include="Sample_0_Callback.h" />
+    <ClInclude Include="Sample_0_CancelAndComplete.h" />
     <ClInclude Include="Sample_0_CreateAndBind.h" />
+    <ClInclude Include="Sample_0_Delay.h" />
+    <ClInclude Include="Sample_0_Easing.h" />
+    <ClInclude Include="Sample_0_Loops.h" />
+    <ClInclude Include="Sample_0_Menu.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteExtensions.h" />
     <ClInclude Include="StepTimer.h" />
     <ClInclude Include="DeviceResources.h" />
+    <ClInclude Include="TextLabelExtensions.h" />
     <ClInclude Include="VecmathMotionAdapter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DX12Canvas.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="DeviceResources.cpp" />
+    <ClCompile Include="Message.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SampleScene.cpp" />
+    <ClCompile Include="Sample_0_Callback.cpp" />
+    <ClCompile Include="Sample_0_CancelAndComplete.cpp" />
     <ClCompile Include="Sample_0_CreateAndBind.cpp" />
+    <ClCompile Include="Sample_0_Delay.cpp" />
+    <ClCompile Include="Sample_0_Easing.cpp" />
+    <ClCompile Include="Sample_0_Loops.cpp" />
+    <ClCompile Include="Sample_0_Menu.cpp" />
     <ClCompile Include="SpriteExtensions.cpp" />
+    <ClCompile Include="TextLabelExtensions.cpp" />
     <ClCompile Include="VecmathMotionAdapter.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -267,12 +289,12 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\directxtk12_desktop_2019.2024.10.29.1\build\native\directxtk12_desktop_2019.targets" Condition="Exists('..\packages\directxtk12_desktop_2019.2024.10.29.1\build\native\directxtk12_desktop_2019.targets')" />
+    <Import Project="..\packages\directxtk12_desktop_2019.2025.3.21.3\build\native\directxtk12_desktop_2019.targets" Condition="Exists('..\packages\directxtk12_desktop_2019.2025.3.21.3\build\native\directxtk12_desktop_2019.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>このプロジェクトは、このコンピューター上にない NuGet パッケージを参照しています。それらのパッケージをダウンロードするには、[NuGet パッケージの復元] を使用します。詳細については、http://go.microsoft.com/fwlink/?LinkID=322105 を参照してください。見つからないファイルは {0} です。</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\directxtk12_desktop_2019.2024.10.29.1\build\native\directxtk12_desktop_2019.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\directxtk12_desktop_2019.2024.10.29.1\build\native\directxtk12_desktop_2019.targets'))" />
+    <Error Condition="!Exists('..\packages\directxtk12_desktop_2019.2025.3.21.3\build\native\directxtk12_desktop_2019.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\directxtk12_desktop_2019.2025.3.21.3\build\native\directxtk12_desktop_2019.targets'))" />
   </Target>
 </Project>

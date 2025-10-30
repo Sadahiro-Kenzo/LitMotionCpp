@@ -1,23 +1,19 @@
 #pragma once
-#include <array>
-#include "Interfaces.h"
-#include "Sprite.h"
+#include "SampleScene.h"
 
 namespace LitMotionCpp::Sample
 {
-	class Sample_0_CreateAndBind:public IScene
+	class Sample_0_CreateAndBind:public SampleScene
 	{
 	private:
-		Sprite m_targetTransform;
-		Sprite m_targetColor;
-		std::array<char, 16> m_targetText;
+		std::weak_ptr<ISprite> m_targetTransform;
+		std::weak_ptr<ISprite> m_targetColor;
+		std::weak_ptr<ITextLabel> m_targetText;
 	public:
-		Sample_0_CreateAndBind();
+		Sample_0_CreateAndBind(std::unique_ptr<ICanvas>&& canvas);
 
 		// IScene ÇâÓÇµÇƒåpè≥Ç≥ÇÍÇ‹ÇµÇΩ
 		void onStart() override;
-		void onUpdate(IInput&) override;
-		void onDraw(IRenderer&) override;
 		void onEnd() override;
 	};
 }//namespace

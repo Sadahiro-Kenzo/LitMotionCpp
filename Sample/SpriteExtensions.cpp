@@ -1,20 +1,17 @@
 #include "pch.h"
-#include "Sprite.h"
+#include "ICanvas.h"
 #include "SpriteExtensions.h"
-#include "VecmathMotionAdapter.h"
 
 namespace LitMotionCpp::Sample
 {
-	MotionBuilder<float>::PropertyBinder<Sprite> SpriteExtensions::ToX
-		= [](MotionBuilder<float>* builder, Sprite* target)
-		{
-			return builder->bindWithState<Sprite>(target, [](float value, Sprite* t) {t->X = value; });
-		};
+	void SpriteExtensions::ToX(float value, ISprite* target)
+	{
+		target->SetX(value);
+	}
 
-	MotionBuilder<Color4f>::PropertyBinder<Sprite> SpriteExtensions::ToColor
-		= [](MotionBuilder<Color4f>* builder, Sprite* target)
-		{
-			return builder->bindWithState<Sprite>(target, [](Color4f& value, Sprite* t) {t->Color = value; });
-		};
+	void SpriteExtensions::ToColor(const Color4f& value, ISprite* target)
+	{
+		target->SetColor(value);
+	}
 
 }//namespace

@@ -1,58 +1,92 @@
 #include "pch.h"
-#include <format>
 #include "Sample_0_CreateAndBind.h"
 #include <LMotion.h>
 #include "VecmathMotionAdapter.h"
 #include "SpriteExtensions.h"
+#include "TextLabelExtensions.h"
+#include "ICanvas.h"
 
 using namespace LitMotionCpp;
 using namespace DirectX;
 
 namespace LitMotionCpp::Sample
 {
-	Sample_0_CreateAndBind::Sample_0_CreateAndBind()
+	Sample_0_CreateAndBind::Sample_0_CreateAndBind(std::unique_ptr<ICanvas>&& initialCanvas)
+		:SampleScene(std::move(initialCanvas))
 	{
-		m_targetTransform.X = 116.0f;
-		m_targetTransform.Y = 100.0f;
-		m_targetTransform.Color =  Color4f{ 0.0f,1.0f,1.0f,1.0f };
+		auto& canvas = getCanvas();
 
-		m_targetColor.X = 116.0f;
-		m_targetColor.Y = 150.0f;
-		m_targetColor.Color = Color4f{ 1.0f,0.0f,0.0f,1.0f };
+		TextLabelSpec spec{
+			.text="1. Create & Bind",
+			.position={0.0f,240.0f},
+			.hAlign=HorizontalAlign::Center,
+			.vAlign=VerticalAlign::Middle,
+			.pivot={0.5f,0.5f}
+		};
+		canvas.PushBackTextLabel(spec);
+
+		spec.text = "Position";
+		spec.position = { -330.0f,180.0f };
+		spec.pivot = { 0.0f,0.5f };
+		spec.hAlign = HorizontalAlign::Left;
+		canvas.PushBackTextLabel(spec);
+
+		auto targetTransform = canvas.PushBackSprite().lock();
+		targetTransform->SetPosition(-5.0f, 2.0f);
+		targetTransform->SetColor(Color4f{0.32f,0.69f,0.96f,1.0f});
+		m_targetTransform = targetTransform;
+
+		spec.text = "Color";
+		spec.position = { -330.0f,30.0f };
+		canvas.PushBackTextLabel(spec);
+
+		auto targetColor = canvas.PushBackSprite().lock();
+		targetColor->SetPosition(-5.0f, -0.5f);
+		targetColor->SetColor(Color4f{ 1.0f,0.0f,0.0f,1.0f });
+		m_targetColor = targetColor;
+
+		spec.text = "Custom";
+		spec.position = { -330.0f,-120.0f };
+		canvas.PushBackTextLabel(spec);
+
+		spec.text = "0.0";
+		spec.position = { -330.0f,-180.0f };
+		spec.color = { 0.7f,0.7f,0.7f,1.0f };
+		m_targetText = canvas.PushBackTextLabel(spec);
 	}
 
 	void Sample_0_CreateAndBind::onStart()
 	{
-		LMotion::create(100.0f, 700.0f, 5.0f)
-			.bindTo<Sprite>(SpriteExtensions::ToX, &m_targetTransform);
+		MotionHandle handle;
 
-		Color4f red{ 1.0f,0.0f,0.0f,1.0f };
-		Color4f blue{ 0.0f,0.0f,1.0f,1.0f };
+		auto targetTransform = m_targetTransform.lock();
+		if (targetTransform)
+		{
+			handle=LMotion::create(-5.0f, 5.0f, 5.0f)
+				.bindWithState<ISprite>(targetTransform.get(),&SpriteExtensions::ToX);
+			AddHandle(handle);
+		}
 
-		LMotion::create<Color4f>(red, blue, 5.0f)
-			.bindTo<Sprite>(SpriteExtensions::ToColor, &m_targetColor);
+		auto targetColor = m_targetColor.lock();
+		if (targetColor)
+		{
+			Color4f red{ 1.0f,0.0f,0.0f,1.0f };
+			Color4f blue{ 0.0f,0.0f,1.0f,1.0f };
 
-		LMotion::create(0.0f, 10.0f, 5.0f)
-			.bind([this](float x)
-				{
-					auto [end, _] = std::format_to_n(this->m_targetText.data(), this->m_targetText.size() - 1, "{}", x);
-					*end = '\0';
-				});
-	}
+			handle=LMotion::create<Color4f>(red, blue, 5.0f)
+				.bindWithState<ISprite>(targetColor.get(),&SpriteExtensions::ToColor);
+			AddHandle(handle);
+		}
 
-	void Sample_0_CreateAndBind::onUpdate(IInput&)
-	{
-	}
+		auto targetText = m_targetText.lock();
+		if (targetText)
+		{
+			handle=LMotion::create(0.0f, 10.0f, 5.0f)
+				.bindWithState<ITextLabel>(targetText.get(), &TextLabelExtensions::ToText);
+			AddHandle(handle);
+		}
 
-	void Sample_0_CreateAndBind::onDraw(IRenderer& renderer)
-	{
-		renderer.drawText(200.0f, 0.0f, "Create & Bind");
-		renderer.drawText(100.0f, 60.0f, "Position");
-		renderer.drawSprite(m_targetTransform);
-		renderer.drawText(100.0f, 110.0f, "Color");
-		renderer.drawSprite(m_targetColor);
-		renderer.drawText(100.0f, 170.0f, "Custom");
-		renderer.drawText(100.0f, 200.0f, m_targetText.data());
+		SampleScene::onStart();
 	}
 
 	void Sample_0_CreateAndBind::onEnd()

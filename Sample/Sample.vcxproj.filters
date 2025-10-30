@@ -26,6 +26,18 @@
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteExtensions.h" />
     <ClInclude Include="VecmathMotionAdapter.h" />
+    <ClInclude Include="ICanvas.h" />
+    <ClInclude Include="DX12Canvas.h" />
+    <ClInclude Include="TextLabelExtensions.h" />
+    <ClInclude Include="Sample_0_Easing.h" />
+    <ClInclude Include="Sample_0_Loops.h" />
+    <ClInclude Include="Sample_0_Delay.h" />
+    <ClInclude Include="Sample_0_Callback.h" />
+    <ClInclude Include="Sample_0_CancelAndComplete.h" />
+    <ClInclude Include="Sample_0_Menu.h" />
+    <ClInclude Include="Message.h" />
+    <ClInclude Include="SampleScene.h" />
+    <ClInclude Include="NotifyMemoryLeak.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -37,6 +49,16 @@
     <ClCompile Include="Sample_0_CreateAndBind.cpp" />
     <ClCompile Include="SpriteExtensions.cpp" />
     <ClCompile Include="VecmathMotionAdapter.cpp" />
+    <ClCompile Include="DX12Canvas.cpp" />
+    <ClCompile Include="TextLabelExtensions.cpp" />
+    <ClCompile Include="Sample_0_Easing.cpp" />
+    <ClCompile Include="Sample_0_Loops.cpp" />
+    <ClCompile Include="Sample_0_Delay.cpp" />
+    <ClCompile Include="Sample_0_Callback.cpp" />
+    <ClCompile Include="Sample_0_CancelAndComplete.cpp" />
+    <ClCompile Include="Sample_0_Menu.cpp" />
+    <ClCompile Include="Message.cpp" />
+    <ClCompile Include="SampleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

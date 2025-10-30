@@ -435,6 +435,8 @@ void DeviceResources::CreateWindowSizeDependentResources()
 
     // Set the 3D rendering viewport and scissor rectangle to target the entire window.
     m_screenViewport.TopLeftX = m_screenViewport.TopLeftY = 0.f;
+    //m_screenViewport.TopLeftX = 0.f;
+    //m_screenViewport.TopLeftY = static_cast<float>(backBufferHeight);
     m_screenViewport.Width = static_cast<float>(backBufferWidth);
     m_screenViewport.Height = static_cast<float>(backBufferHeight);
     m_screenViewport.MinDepth = D3D12_MIN_DEPTH;
