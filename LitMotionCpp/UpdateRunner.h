@@ -19,7 +19,7 @@ namespace LitMotionCpp
 	protected:
 		static float getEasedValue(MotionDataCore& data, float value)
 		{
-			return data.Ease == Ease::CustomAnimationCurve ? value : EaseUtility::evaluate(value, data.Ease);
+			return data.Ease == Ease::CustomAnimationCurve ? data.Curve->evaluate(value) : EaseUtility::evaluate(value, data.Ease);
 		}
 	};
 

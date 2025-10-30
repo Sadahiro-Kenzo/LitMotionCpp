@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AnimationCurve.h" />
     <ClInclude Include="EaseUtility.h" />
     <ClInclude Include="Error.h" />
     <ClInclude Include="FastListCore.h" />
@@ -167,6 +168,7 @@
     <ClInclude Include="UpdateRunner.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AnimationCurve.cpp" />
     <ClCompile Include="EaseUtility.cpp" />
     <ClCompile Include="Error.cpp" />
     <ClCompile Include="ManualMotionDispatcher.cpp" />

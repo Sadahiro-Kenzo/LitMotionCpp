@@ -22,7 +22,7 @@ namespace LitMotionCpp
 		return MotionStorageManager::getMotionDataRef(*this).PlaybackSpeed;
 	}
 
-	bool MotionHandle::isActive()
+	bool MotionHandle::isActive() const
 	{
 		return MotionStorageManager::isActive(*this);
 	}

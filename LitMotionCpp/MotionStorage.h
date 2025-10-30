@@ -10,6 +10,7 @@
 #include "MotionHandle.h"
 #include "MotionStatus.h"
 #include "EaseUtility.h"
+#include "AnimationCurve.h"
 
 namespace LitMotionCpp
 {
@@ -107,6 +108,14 @@ namespace LitMotionCpp
 		void removeAt(int denseIndex)
 		{
 			m_tail--;
+
+			// delete AnimationCurve if exists
+			AnimationCurve* curve = m_dataArray[denseIndex].Core.Curve;
+			if (curve)
+			{
+				delete curve;
+				m_dataArray[denseIndex].Core.Curve = nullptr;
+			}
 
 			// swap elements
 			m_dataArray[denseIndex] = m_dataArray[m_tail];

@@ -44,7 +44,7 @@ namespace LitMotionCpp
 		* 
 		* @return True if motion is active, otherwise false. 
 		*/
-		bool isActive();
+		bool isActive() const;
 
 		/**
 		* @brief Complete Motion

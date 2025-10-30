@@ -6,6 +6,7 @@ namespace LitMotionCpp
 	enum class MotionTimeKind;
 	enum class DelayType;
 	enum class LoopType;
+	class AnimationCurve;
 
 	struct MotionDataCore
 	{
@@ -14,6 +15,7 @@ namespace LitMotionCpp
 		float PlaybackSpeed;
 		float Duration;
 		Ease Ease;
+		AnimationCurve* Curve;
 		MotionTimeKind TimeKind;
 		float Delay;
 		int Loops;

@@ -10,6 +10,7 @@
 #include "MotionCallbackData.h"
 #include "PrimitiveMotionAdapter.h"
 #include "EaseUtility.h"
+#include "AnimationCurve.h"
 
 namespace LitMotionCpp
 {
@@ -28,9 +29,47 @@ namespace LitMotionCpp
 		MotionCallbackData m_callbackData;
 		bool m_bindOnSchedule = false;
 	public:
+		MotionBuilder() = delete;
 		MotionBuilder(const TValue& from, const TValue& to, float duration)
 			:m_motionData{from,to,duration}
 		{
+		}
+
+		~MotionBuilder()
+		{
+			if(m_motionData.Core.Curve)
+			{
+				delete m_motionData.Core.Curve;
+				m_motionData.Core.Curve = nullptr;
+			}
+		}
+
+		/**
+		* @brief Specify easing for motion.
+		*
+		* @param [in] ease : The type of easing
+		*
+		* @return This builder to allow chaining multiple method calls.
+		*/
+		MotionBuilder& withEase(Ease ease)
+		{
+			m_motionData.Core.Ease = ease;
+			return *this;
+		}
+
+		/**
+		* @brief Specify easing for motion.
+		*
+		* @param [in] begin : Pointer to the beginning of the keyframe array
+		* @param [in] end : Pointer to the end of the keyframe array
+		*
+		* @return This builder to allow chaining multiple method calls.
+		*/
+		MotionBuilder& withCustomCurve(const Keyframe* begin,const Keyframe* end)
+		{
+			m_motionData.Core.Ease = Ease::CustomAnimationCurve;
+			m_motionData.Core.Curve = AnimationCurve::create(begin, end);
+			return *this;
 		}
 
 		/**
@@ -209,24 +248,6 @@ namespace LitMotionCpp
 			setCallbackData<TState1,TState2,TState3>(state1,state2,state3, action);
 			return schedule();
 		}
-
-		template<typename TTarget>
-		using PropertyBinder = std::function<MotionHandle(MotionBuilder<TValue>*, TTarget*)>;
-
-		/**
-		* @brief Create motion and bind it to a specific boject property.
-		* 
-		* @tparam TTarget : Type of target
-		* @param [in] propertyBinder : function of bind to target's property
-		* @param [in] target : Motion state
-		* 
-		* @return Handle of the created motion data.
-		*/
-		template<typename TTarget>
-		MotionHandle bindTo(PropertyBinder<TTarget> propertyBinder, TTarget* target)
-		{
-			return propertyBinder(this, target);
-		}
 	private:
 		void setMotionData()
 		{
@@ -274,10 +295,12 @@ namespace LitMotionCpp
 					defaultScheduler = MotionScheduler::getDefault<TValue>();
 				}
 				handle = defaultScheduler.lock()->schedule(m_motionData, m_callbackData);
+				m_motionData.Core.Curve = nullptr; // Prevent double deletion
 			}
 			else
 			{
 				handle=m_scheduler.lock()->schedule(m_motionData, m_callbackData);
+				m_motionData.Core.Curve = nullptr; // Prevent double deletion
 			}
 
 			return handle;

@@ -11,6 +11,7 @@ namespace LitMotionCpp
 		,PlaybackSpeed(1.0f)
 		,Duration(duration)
 		,Ease(Ease::Linear)
+		,Curve(nullptr)
 		,TimeKind(MotionTimeKind::Time)
 		,Delay(0.0f)
 		,Loops(1)
