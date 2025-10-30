@@ -1,4 +1,6 @@
 #pragma once
+#include <concepts>
+#include "IMotionOptions.h"
 namespace LitMotionCpp
 {
 	enum class MotionStatus;
@@ -26,12 +28,14 @@ namespace LitMotionCpp
 		MotionDataCore();
 	};
 
-	template<typename TValue>
+	template<typename TValue,typename TOptions>
+		requires std::derived_from<TOptions, IMotionOptions>
 	struct MotionData
 	{
 		MotionDataCore Core;
 		TValue StartValue;
 		TValue EndValue;
+		TOptions Options;
 
 		MotionData(const TValue& startValue, const TValue& endValue,const float duration)
 			:Core{duration}

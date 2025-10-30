@@ -23,16 +23,17 @@ namespace LitMotionCpp
 		}
 	};
 
-	template<typename TValue>
+	template<typename TValue,typename TOptions>
+		requires std::derived_from<TOptions, IMotionOptions>
 	class UpdateRunner :public IUpdateRunner
 	{
 	private:
-		std::weak_ptr<MotionStorage<TValue>> m_storage;
+		std::weak_ptr<MotionStorage<TValue,TOptions>> m_storage;
 		double m_prevTime;
 		double m_prevUnscaleTime;
 		double m_prevRealtime;
 	public:
-		UpdateRunner(std::weak_ptr<MotionStorage<TValue>> storage, double time, double unscaledTime, double realTime)
+		UpdateRunner(std::weak_ptr<MotionStorage<TValue,TOptions>> storage, double time, double unscaledTime, double realTime)
 			:m_storage(storage)
 			,m_prevTime(time)
 			,m_prevUnscaleTime(unscaledTime)
@@ -61,7 +62,7 @@ namespace LitMotionCpp
 
 			for (int index=0; index<dataSpan.size(); index++)
 			{
-				MotionData<TValue>& motionData = dataSpan[index];
+				MotionData<TValue,TOptions>& motionData = dataSpan[index];
 
 				if (motionData.Core.Status == MotionStatus::Scheduled || motionData.Core.Status == MotionStatus::Delayed || motionData.Core.Status == MotionStatus::Playing) [[likely]]
 				{
@@ -212,7 +213,7 @@ namespace LitMotionCpp
 			auto callbackSpan = storage->getCallbacksSpan();
 			for (int index = 0; index < callbackSpan.size(); index++)
 			{
-				MotionData<TValue>& motionData = dataSpan[index];
+				MotionData<TValue,TOptions>& motionData = dataSpan[index];
 				MotionCallbackData& callbackData = callbackSpan[index];
 
 				auto status = motionData.Core.Status;

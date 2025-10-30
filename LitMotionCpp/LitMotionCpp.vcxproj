@@ -148,6 +148,8 @@
     <ClInclude Include="Error.h" />
     <ClInclude Include="FastListCore.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="IMotionOptions.h" />
+    <ClInclude Include="IntegerOptions.h" />
     <ClInclude Include="MainLoopMotionScheduler.h" />
     <ClInclude Include="MotionAdapter.h" />
     <ClInclude Include="IMotionScheduler.h" />
@@ -163,6 +165,7 @@
     <ClInclude Include="MotionStatus.h" />
     <ClInclude Include="MotionStorage.h" />
     <ClInclude Include="MotionStorageManager.h" />
+    <ClInclude Include="NoOptions.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PrimitiveMotionAdapter.h" />
     <ClInclude Include="UpdateRunner.h" />

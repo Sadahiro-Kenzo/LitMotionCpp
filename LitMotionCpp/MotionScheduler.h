@@ -11,36 +11,43 @@ namespace LitMotionCpp
 	class MotionScheduler
 	{
 	private:
-		template<typename TValue>
-		static std::shared_ptr<IMotionScheduler<TValue>> m_manualMotionScheduler;
-		template<typename TValue>
-		static std::shared_ptr<IMotionScheduler<TValue>> m_defaultMotionScheduler;
+		template<typename TValue,typename TOptions>
+			requires std::derived_from<TOptions, IMotionOptions>
+		static std::shared_ptr<IMotionScheduler<TValue,TOptions>> m_manualMotionScheduler;
+		template<typename TValue,typename TOptions>
+			requires std::derived_from<TOptions, IMotionOptions>
+		static std::shared_ptr<IMotionScheduler<TValue,TOptions>> m_defaultMotionScheduler;
 	public:
-		template<typename TValue>
-		static std::weak_ptr<IMotionScheduler<TValue>> getManual()
+		template<typename TValue,typename TOptions>
+			requires std::derived_from<TOptions, IMotionOptions>
+		static std::weak_ptr<IMotionScheduler<TValue,TOptions>> getManual()
 		{
-			if (!m_manualMotionScheduler<TValue>)
+			if (!m_manualMotionScheduler<TValue,TOptions>)
 			{
-				m_manualMotionScheduler<TValue> = std::make_shared<ManualMotionScheduler<TValue>>();
+				m_manualMotionScheduler<TValue,TOptions> = std::make_shared<ManualMotionScheduler<TValue,TOptions>>();
 			}
 
-			return m_manualMotionScheduler<TValue>;
+			return m_manualMotionScheduler<TValue,TOptions>;
 		}
 
-		template<typename TValue>
-		static void setDefault(std::shared_ptr<IMotionScheduler<TValue>> scheduler)
+		template<typename TValue,typename TOptions>
+			requires std::derived_from<TOptions, IMotionOptions>
+		static void setDefault(std::shared_ptr<IMotionScheduler<TValue,TOptions>> scheduler)
 		{
-			m_defaultMotionScheduler<TValue> = scheduler;
+			m_defaultMotionScheduler<TValue,TOptions> = scheduler;
 		}
-		template<typename TValue>
-		static std::weak_ptr<IMotionScheduler<TValue>> getDefault() { return m_defaultMotionScheduler<TValue>; }
+		template<typename TValue,typename TOptions>
+			requires std::derived_from<TOptions, IMotionOptions>
+		static std::weak_ptr<IMotionScheduler<TValue,TOptions>> getDefault() { return m_defaultMotionScheduler<TValue,TOptions>; }
 	};
 
-	template<typename TValue>
-	std::shared_ptr<IMotionScheduler<TValue>> MotionScheduler::m_manualMotionScheduler;
+	template<typename TValue,typename TOptions>
+		requires std::derived_from<TOptions, IMotionOptions>
+	std::shared_ptr<IMotionScheduler<TValue,TOptions>> MotionScheduler::m_manualMotionScheduler;
 
-	template<typename TValue>
-	std::shared_ptr<IMotionScheduler<TValue>> MotionScheduler::m_defaultMotionScheduler;
+	template<typename TValue,typename TOptions>
+		requires std::derived_from<TOptions, IMotionOptions>
+	std::shared_ptr<IMotionScheduler<TValue,TOptions>> MotionScheduler::m_defaultMotionScheduler;
 
 }//namespace
 

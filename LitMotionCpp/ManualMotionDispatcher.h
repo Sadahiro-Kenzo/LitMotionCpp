@@ -7,30 +7,33 @@
 
 namespace LitMotionCpp
 {
-	template<typename TValue>
+	template<typename TValue,typename TOptions>
+		requires std::derived_from<TOptions, IMotionOptions>
 	class Cache
 	{
 	private:
 		friend class ManualMotionDispatcher;
 
-		static std::shared_ptr<MotionStorage<TValue>> updateStorage;
-		static std::shared_ptr<UpdateRunner<TValue>> updateRunner;
+		static std::shared_ptr<MotionStorage<TValue,TOptions>> updateStorage;
+		static std::shared_ptr<UpdateRunner<TValue,TOptions>> updateRunner;
 
-		static std::weak_ptr<MotionStorage<TValue>> getOrCreate()
+		static std::weak_ptr<MotionStorage<TValue,TOptions>> getOrCreate()
 		{
 			if (!updateStorage)
 			{
-				auto storage = std::make_shared<MotionStorage<TValue>>(MotionStorageManager::getCurrentStorageId());
+				auto storage = std::make_shared<MotionStorage<TValue,TOptions>>(MotionStorageManager::getCurrentStorageId());
 				MotionStorageManager::addStorage(storage);
 				updateStorage = storage;
 			}
 			return updateStorage;
 		}
 	};
-	template<typename TValue>
-	std::shared_ptr<MotionStorage<TValue>> Cache<TValue>::updateStorage;
-	template<typename TValue>
-	std::shared_ptr<UpdateRunner<TValue>> Cache<TValue>::updateRunner;
+	template<typename TValue,typename TOptions>
+		requires std::derived_from<TOptions, IMotionOptions>
+	std::shared_ptr<MotionStorage<TValue,TOptions>> Cache<TValue,TOptions>::updateStorage;
+	template<typename TValue,typename TOptions>
+		requires std::derived_from<TOptions, IMotionOptions>
+	std::shared_ptr<UpdateRunner<TValue,TOptions>> Cache<TValue,TOptions>::updateRunner;
 
 	class ManualMotionDispatcher
 	{
@@ -55,15 +58,16 @@ namespace LitMotionCpp
 		*/
 		static void reset();
 
-		template<typename TValue>
-		static MotionHandle schedule(const MotionData<TValue>& data, const MotionCallbackData& callbackData)
+		template<typename TValue,typename TOptions>
+			requires std::derived_from<TOptions, IMotionOptions>
+		static MotionHandle schedule(const MotionData<TValue,TOptions>& data, const MotionCallbackData& callbackData)
 		{
-			auto storage = Cache<TValue>::getOrCreate();
-			if (!Cache<TValue>::updateRunner)
+			auto storage = Cache<TValue,TOptions>::getOrCreate();
+			if (!Cache<TValue,TOptions>::updateRunner)
 			{
-				auto runner = std::make_shared<UpdateRunner<TValue>>(storage, getTime(), getTime(), getTime());
+				auto runner = std::make_shared<UpdateRunner<TValue,TOptions>>(storage, getTime(), getTime(), getTime());
 				m_updateRunners.add(runner);
-				Cache<TValue>::updateRunner = runner;
+				Cache<TValue,TOptions>::updateRunner = runner;
 			}
 
 			auto [entryIndex, version] = storage.lock()->append(data, callbackData);

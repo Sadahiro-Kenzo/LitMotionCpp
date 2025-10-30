@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Options">
+      <UniqueIdentifier>{396a0aee-9152-4bb4-b533-402f960f3e37}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -83,6 +86,15 @@
     </ClInclude>
     <ClInclude Include="AnimationCurve.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="IMotionOptions.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="NoOptions.h">
+      <Filter>ヘッダー ファイル\Options</Filter>
+    </ClInclude>
+    <ClInclude Include="IntegerOptions.h">
+      <Filter>ヘッダー ファイル\Options</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

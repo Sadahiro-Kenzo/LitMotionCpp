@@ -25,13 +25,14 @@ namespace LitMotionCpp
 	private:
 		static std::map<int, FastListCore<std::weak_ptr<IUpdateRunner>>> fastUpdateRunners;
 
-		template<typename TValue>
+		template<typename TValue,typename TOptions>
+			requires std::derived_from<TOptions, IMotionOptions>
 		class StorageCache
 		{
 		private:
-			static std::map<int, std::shared_ptr<MotionStorage<TValue>>> updateStorages;
+			static std::map<int, std::shared_ptr<MotionStorage<TValue,TOptions>>> updateStorages;
 		public:
-			static std::weak_ptr<MotionStorage<TValue>> getOrCreate(int loopTiming)
+			static std::weak_ptr<MotionStorage<TValue,TOptions>> getOrCreate(int loopTiming)
 			{
 				if (updateStorages.contains(loopTiming))
 				{
@@ -39,7 +40,7 @@ namespace LitMotionCpp
 				}
 				else
 				{
-					auto storage = std::make_shared<MotionStorage<TValue>>(MotionStorageManager::getCurrentStorageId());
+					auto storage = std::make_shared<MotionStorage<TValue,TOptions>>(MotionStorageManager::getCurrentStorageId());
 					MotionStorageManager::addStorage(storage);
 					updateStorages.insert(std::make_pair(loopTiming, storage));
 					return storage;
@@ -47,13 +48,14 @@ namespace LitMotionCpp
 			}
 		};
 
-		template<typename TValue>
+		template<typename TValue,typename TOptions>
+			requires std::derived_from<TOptions, IMotionOptions>
 		class RunnerCache
 		{
 		private:
-			static std::map<int, std::shared_ptr<UpdateRunner<TValue>>> updateRunners;
+			static std::map<int, std::shared_ptr<UpdateRunner<TValue,TOptions>>> updateRunners;
 		public:
-			static std::weak_ptr<UpdateRunner<TValue>> getOrCreate(int loopTiming,std::weak_ptr<MotionStorage<TValue>> storage)
+			static std::weak_ptr<UpdateRunner<TValue,TOptions>> getOrCreate(int loopTiming,std::weak_ptr<MotionStorage<TValue,TOptions>> storage)
 			{
 				if (updateRunners.contains(loopTiming))
 				{
@@ -61,7 +63,7 @@ namespace LitMotionCpp
 				}
 				else
 				{
-					std::shared_ptr<UpdateRunner<TValue>> runner = std::make_shared<UpdateRunner<TValue>>(storage, getTime(), getTime(), getTime());
+					std::shared_ptr<UpdateRunner<TValue,TOptions>> runner = std::make_shared<UpdateRunner<TValue,TOptions>>(storage, getTime(), getTime(), getTime());
 					updateRunners.insert(std::make_pair(loopTiming, runner));
 
 					if (!fastUpdateRunners.contains(loopTiming))
@@ -80,11 +82,12 @@ namespace LitMotionCpp
 		*/
 		static void clear();
 
-		template<typename TValue>
-		static MotionHandle schedule(const MotionData<TValue>& data, const MotionCallbackData& callbackData,int looptiming)
+		template<typename TValue, typename TOptions>
+			requires std::derived_from<TOptions, IMotionOptions>
+		static MotionHandle schedule(const MotionData<TValue,TOptions>& data, const MotionCallbackData& callbackData,int looptiming)
 		{
-			auto storage = StorageCache<TValue>::getOrCreate(looptiming);
-			RunnerCache<TValue>::getOrCreate(looptiming,storage);
+			auto storage = StorageCache<TValue,TOptions>::getOrCreate(looptiming);
+			RunnerCache<TValue,TOptions>::getOrCreate(looptiming,storage);
 
 			auto [entryIndex, version] = storage.lock()->append(data, callbackData);
 
@@ -117,11 +120,13 @@ namespace LitMotionCpp
 		static std::function<void(std::exception&)> getUnhandledExceptionHandler();
 	};
 
-	template<typename TValue>
-	std::map<int, std::shared_ptr<MotionStorage<TValue>>> MotionDispatcher::StorageCache<TValue>::updateStorages;
+	template<typename TValue,typename TOptions>
+		requires std::derived_from<TOptions, IMotionOptions>
+	std::map<int, std::shared_ptr<MotionStorage<TValue,TOptions>>> MotionDispatcher::StorageCache<TValue,TOptions>::updateStorages;
 
-	template<typename TValue>
-	std::map<int, std::shared_ptr<UpdateRunner<TValue>>> MotionDispatcher::RunnerCache<TValue>::updateRunners;
+	template<typename TValue,typename TOptions>
+		requires std::derived_from<TOptions, IMotionOptions>
+	std::map<int, std::shared_ptr<UpdateRunner<TValue,TOptions>>> MotionDispatcher::RunnerCache<TValue,TOptions>::updateRunners;
 
 
 }//namespace

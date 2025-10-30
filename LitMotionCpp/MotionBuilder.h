@@ -19,13 +19,14 @@ namespace LitMotionCpp
 	* 
 	* @tparam TValue : The type of value to animate
 	*/
-	template<typename TValue>
+	template<typename TValue,typename TOptions>
+		requires std::derived_from<TOptions, IMotionOptions>
 	class MotionBuilder
 	{
 	private:
-		std::weak_ptr<IMotionScheduler<TValue>> m_scheduler;
+		std::weak_ptr<IMotionScheduler<TValue,TOptions>> m_scheduler;
 		std::function<void(TValue)> m_updateAction;
-		MotionData<TValue> m_motionData;
+		MotionData<TValue,TOptions> m_motionData;
 		MotionCallbackData m_callbackData;
 		bool m_bindOnSchedule = false;
 	public:
@@ -161,7 +162,7 @@ namespace LitMotionCpp
 		* 
 		* @return This builder to allow chaining multiple method calls.
 		*/
-		MotionBuilder& withScheduler(std::weak_ptr<IMotionScheduler<TValue>> scheduler)
+		MotionBuilder& withScheduler(std::weak_ptr<IMotionScheduler<TValue, TOptions>> scheduler)
 		{
 			m_scheduler = scheduler;
 			return *this;
@@ -288,11 +289,11 @@ namespace LitMotionCpp
 
 			if (m_scheduler.expired())
 			{
-				auto defaultScheduler = MotionScheduler::getDefault<TValue>();
+				auto defaultScheduler = MotionScheduler::getDefault<TValue,TOptions>();
 				if (defaultScheduler.expired())
 				{
-					MotionScheduler::setDefault<TValue>(std::make_shared<MainLoopMotionScheduler<TValue>>(MotionTimeKind::Time));
-					defaultScheduler = MotionScheduler::getDefault<TValue>();
+					MotionScheduler::setDefault<TValue, TOptions>(std::make_shared<MainLoopMotionScheduler<TValue, TOptions>>(MotionTimeKind::Time));
+					defaultScheduler = MotionScheduler::getDefault<TValue,TOptions>();
 				}
 				handle = defaultScheduler.lock()->schedule(m_motionData, m_callbackData);
 				m_motionData.Core.Curve = nullptr; // Prevent double deletion

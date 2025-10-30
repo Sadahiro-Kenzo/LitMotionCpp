@@ -7,6 +7,8 @@
 #include "MainLoopMotionScheduler.h"
 #include "ManualMotionDispatcher.h"
 #include "PrimitiveMotionAdapter.h"
+#include "NoOptions.h"
+#include "IntegerOptions.h"
 
 namespace LitMotionCpp
 {
@@ -22,15 +24,16 @@ namespace LitMotionCpp
 		* 
 		* @return Created motion builder
 		*/
-		static MotionBuilder<float> create(float from, float to, float duration)
+		static MotionBuilder<float,NoOptions> create(float from, float to, float duration)
 		{
-			return create<float>(from, to, duration);
+			return create<float,NoOptions>(from, to, duration);
 		}
 
-		template<typename TValue>
-		static MotionBuilder<TValue> create(const TValue& from, const TValue& to, float duration)
+		template<typename TValue,typename TOptions>
+			requires std::derived_from<TOptions, IMotionOptions>
+		static MotionBuilder<TValue,TOptions> create(const TValue& from, const TValue& to, float duration)
 		{
-			return MotionBuilder<TValue>(from, to, duration);
+			return MotionBuilder<TValue,TOptions>(from, to, duration);
 		}
 	};
 }//namespace

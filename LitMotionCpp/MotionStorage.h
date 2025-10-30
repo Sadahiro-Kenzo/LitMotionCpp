@@ -51,7 +51,8 @@ namespace LitMotionCpp
 		void reset(size_t startEntry);
 	};
 
-	template<typename TValue>
+	template<typename TValue,typename TOptions>
+		requires std::derived_from<TOptions, IMotionOptions>
 	class MotionStorage:public IMotionStorage
 	{
 	private:
@@ -59,7 +60,7 @@ namespace LitMotionCpp
 		static const size_t InitialCapacity = 8;
 		StorageEntryList m_entries;
 		std::vector<int> m_toEntryIndex;
-		std::vector<MotionData<TValue>> m_dataArray;
+		std::vector<MotionData<TValue,TOptions>> m_dataArray;
 		std::vector<MotionCallbackData> m_callbacksArray;
 		int m_tail;
 	public:
@@ -76,16 +77,16 @@ namespace LitMotionCpp
 
 		int getStorageId() { return m_storageId; }
 
-		std::span<MotionData<TValue>> getDataSpan()
+		std::span<MotionData<TValue,TOptions>> getDataSpan()
 		{
-			return std::span<MotionData<TValue>>(m_dataArray.begin(), m_tail);
+			return std::span<MotionData<TValue,TOptions>>(m_dataArray.begin(), m_tail);
 		};
 		std::span<MotionCallbackData> getCallbacksSpan()
 		{
 			return std::span<MotionCallbackData>(m_callbacksArray.begin(), m_tail);
 		};
 
-		std::tuple<int, int> append(const MotionData<TValue>& data, const MotionCallbackData& callbacks)
+		std::tuple<int, int> append(const MotionData<TValue,TOptions>& data, const MotionCallbackData& callbacks)
 		{
 			if (m_tail == m_dataArray.size())
 			{

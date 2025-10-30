@@ -9,7 +9,7 @@ public:
 	virtual ~Environment() = default;
 	virtual void SetUp() override
 	{
-		MotionScheduler::setDefault<float>(MotionScheduler::getManual<float>().lock());
+		MotionScheduler::setDefault<float>(MotionScheduler::getManual<float,NoOptions>().lock());
 	}
 };
 

@@ -4,8 +4,9 @@
 
 namespace LitMotionCpp
 {
-	template<typename TValue>
-	class MainLoopMotionScheduler :public IMotionScheduler<TValue>
+	template<typename TValue, typename TOptions>
+		requires std::derived_from<TOptions, IMotionOptions>
+	class MainLoopMotionScheduler :public IMotionScheduler<TValue,TOptions>
 	{
 	private:
 		int m_loopTiming;
@@ -16,9 +17,9 @@ namespace LitMotionCpp
 			,m_timeKind(timeKind)
 		{}
 
-		virtual MotionHandle schedule(const MotionData<TValue>& data, const MotionCallbackData& callbackData) override
+		virtual MotionHandle schedule(const MotionData<TValue,TOptions>& data, const MotionCallbackData& callbackData) override
 		{
-			return MotionDispatcher::schedule<TValue>(data, callbackData,m_loopTiming);
+			return MotionDispatcher::schedule<TValue, TOptions>(data, callbackData,m_loopTiming);
 		}
 
 		virtual double getTime() override
