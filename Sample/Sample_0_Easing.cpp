@@ -110,7 +110,7 @@ namespace LitMotionCpp::Sample
 		if (target)
 		{
 			handle = LMotion::create(-5.0f, 5.0f, 3.0f)
-				.withCustomCurve(std::begin(keyframes), std::end(keyframes))
+				.withEase(std::begin(keyframes), std::end(keyframes))
 				.bindWithState<ISprite>(target.get(), &SpriteExtensions::ToX);
 			AddHandle(handle);
 		}

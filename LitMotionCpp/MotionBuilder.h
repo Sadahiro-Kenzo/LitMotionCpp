@@ -29,6 +29,8 @@ namespace LitMotionCpp
 		MotionData<TValue,TOptions> m_motionData;
 		MotionCallbackData m_callbackData;
 		bool m_bindOnSchedule = false;
+		const Keyframe* m_customCurveBegin = nullptr;
+		const Keyframe* m_customCurveEnd = nullptr;
 	public:
 		MotionBuilder() = delete;
 		MotionBuilder(const TValue& from, const TValue& to, float duration)
@@ -61,15 +63,19 @@ namespace LitMotionCpp
 		/**
 		* @brief Specify easing for motion.
 		*
+		* keyframe array is not copied, the created instance has reference to the keyframe array [begin,end).
+		* keyframes must be sorted by time in ascending order.
+		*
 		* @param [in] begin : Pointer to the beginning of the keyframe array
 		* @param [in] end : Pointer to the end of the keyframe array
 		*
 		* @return This builder to allow chaining multiple method calls.
 		*/
-		MotionBuilder<TValue, TOptions, TAdapter>& withCustomCurve(const Keyframe* begin,const Keyframe* end)
+		MotionBuilder<TValue, TOptions, TAdapter>& withEase(const Keyframe* begin,const Keyframe* end)
 		{
 			m_motionData.Core.Ease = Ease::CustomAnimationCurve;
-			m_motionData.Core.Curve = AnimationCurve::create(begin, end);
+			m_customCurveBegin = begin;
+			m_customCurveEnd = end;
 			return *this;
 		}
 
@@ -268,6 +274,13 @@ namespace LitMotionCpp
 		void setMotionData()
 		{
 			m_motionData.Core.Status = MotionStatus::Scheduled;
+
+			if (m_customCurveBegin && m_customCurveEnd)
+			{
+				m_motionData.Core.Curve = AnimationCurve::create(m_customCurveBegin, m_customCurveEnd);
+				m_customCurveBegin = nullptr;
+				m_customCurveEnd = nullptr;
+			}
 		}
 		void setCallbackData(std::function<void(TValue&)> action)
 		{
@@ -297,7 +310,10 @@ namespace LitMotionCpp
 					m_motionData.StartValue,
 					m_motionData.EndValue,
 					m_motionData.Options,
-					MotionEvaluationContext{ EaseUtility::evaluate(0.0,m_motionData.Core.Ease) }
+					MotionEvaluationContext{
+						m_motionData.Core.Ease == Ease::CustomAnimationCurve ? m_motionData.Core.Curve->evaluate(0.0f)
+						:EaseUtility::evaluate(0.0f,m_motionData.Core.Ease)
+					}
 				);
 				m_callbackData.invoke(bindValue);
 			}
