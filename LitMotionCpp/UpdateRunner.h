@@ -5,7 +5,7 @@
 #include "EaseUtility.h"
 #include "MotionStorage.h"
 #include "IMotionScheduler.h"
-#include "MotionAdapter.h"
+#include "IMotionAdapter.h"
 
 namespace LitMotionCpp
 {
@@ -23,17 +23,17 @@ namespace LitMotionCpp
 		}
 	};
 
-	template<typename TValue,typename TOptions>
-		requires std::derived_from<TOptions, IMotionOptions>
+	template<typename TValue,typename TOptions,typename TAdapter>
+		requires std::derived_from<TOptions, IMotionOptions>&& std::derived_from<TAdapter, IMotionAdapter<TValue, TOptions>>
 	class UpdateRunner :public IUpdateRunner
 	{
 	private:
-		std::weak_ptr<MotionStorage<TValue,TOptions>> m_storage;
+		std::weak_ptr<MotionStorage<TValue,TOptions,TAdapter>> m_storage;
 		double m_prevTime;
 		double m_prevUnscaleTime;
 		double m_prevRealtime;
 	public:
-		UpdateRunner(std::weak_ptr<MotionStorage<TValue,TOptions>> storage, double time, double unscaledTime, double realTime)
+		UpdateRunner(std::weak_ptr<MotionStorage<TValue,TOptions,TAdapter>> storage, double time, double unscaledTime, double realTime)
 			:m_storage(storage)
 			,m_prevTime(time)
 			,m_prevUnscaleTime(unscaledTime)
@@ -59,6 +59,8 @@ namespace LitMotionCpp
 			output.reserve(dataSpan.size());
 			std::vector<int> completedIndex;
 			completedIndex.reserve(dataSpan.size());
+			TAdapter adapter;
+			MotionEvaluationContext context{ 0.0f };
 
 			for (int index=0; index<dataSpan.size(); index++)
 			{
@@ -197,9 +199,9 @@ namespace LitMotionCpp
 						motionData.Core.Status = MotionStatus::Playing;
 					}
 
-					MotionEvaluationContext context{progress};
+					context.Progress=progress;
 
-					output.emplace_back(evaluate<TValue>(motionData.StartValue,motionData.EndValue,context));
+					output.emplace_back(adapter.evaluate(motionData.StartValue,motionData.EndValue,motionData.Options,context));
 				}
 				else if(motionData.Core.Status==MotionStatus::Completed || motionData.Core.Status==MotionStatus::Canceled)
 				{

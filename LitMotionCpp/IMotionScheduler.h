@@ -2,14 +2,15 @@
 #include "MotionHandle.h"
 #include "MotionData.h"
 #include "MotionCallbackData.h"
+#include "IMotionAdapter.h"
 
 namespace LitMotionCpp
 {
 	/**
 	* @brief Provides the function to schedule the execution of a motion.
 	*/
-	template<typename TValue,typename TOptions>
-		requires std::derived_from<TOptions, IMotionOptions>
+	template<typename TValue,typename TOptions,typename TAdapter>
+		requires std::derived_from<TOptions, IMotionOptions>&& std::derived_from<TAdapter, IMotionAdapter<TValue, TOptions>>
 	class IMotionScheduler
 	{
 	public:

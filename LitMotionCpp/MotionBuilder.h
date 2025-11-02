@@ -19,12 +19,12 @@ namespace LitMotionCpp
 	* 
 	* @tparam TValue : The type of value to animate
 	*/
-	template<typename TValue,typename TOptions>
-		requires std::derived_from<TOptions, IMotionOptions>
+	template<typename TValue,typename TOptions,typename TAdapter>
+		requires std::derived_from<TOptions, IMotionOptions> && std::derived_from<TAdapter, IMotionAdapter<TValue, TOptions>>
 	class MotionBuilder
 	{
 	private:
-		std::weak_ptr<IMotionScheduler<TValue,TOptions>> m_scheduler;
+		std::weak_ptr<IMotionScheduler<TValue,TOptions, TAdapter>> m_scheduler;
 		std::function<void(TValue)> m_updateAction;
 		MotionData<TValue,TOptions> m_motionData;
 		MotionCallbackData m_callbackData;
@@ -52,7 +52,7 @@ namespace LitMotionCpp
 		*
 		* @return This builder to allow chaining multiple method calls.
 		*/
-		MotionBuilder& withEase(Ease ease)
+		MotionBuilder<TValue,TOptions,TAdapter>& withEase(Ease ease)
 		{
 			m_motionData.Core.Ease = ease;
 			return *this;
@@ -66,7 +66,7 @@ namespace LitMotionCpp
 		*
 		* @return This builder to allow chaining multiple method calls.
 		*/
-		MotionBuilder& withCustomCurve(const Keyframe* begin,const Keyframe* end)
+		MotionBuilder<TValue, TOptions, TAdapter>& withCustomCurve(const Keyframe* begin,const Keyframe* end)
 		{
 			m_motionData.Core.Ease = Ease::CustomAnimationCurve;
 			m_motionData.Core.Curve = AnimationCurve::create(begin, end);
@@ -82,7 +82,7 @@ namespace LitMotionCpp
 		* 
 		* @return This builder to allow chaining multiple method calls.
 		*/
-		MotionBuilder& withDelay(float delay,DelayType delayType=DelayType::FirstLoop,bool skipValuesDuringDelay=true)
+		MotionBuilder<TValue, TOptions, TAdapter>& withDelay(float delay,DelayType delayType=DelayType::FirstLoop,bool skipValuesDuringDelay=true)
 		{
 			m_motionData.Core.Delay = delay;
 			m_motionData.Core.DelayType = delayType;
@@ -95,8 +95,10 @@ namespace LitMotionCpp
 		* 
 		* @param [in] loops : Number of loops
 		* @param [in] loopTpe : Behavior at the end of each loop
+		* 
+		* @return This builder to allow chaining multiple method calls.
 		*/
-		MotionBuilder& withLoops(int loops,LoopType loopType=LoopType::Restart)
+		MotionBuilder<TValue, TOptions, TAdapter>& withLoops(int loops,LoopType loopType=LoopType::Restart)
 		{
 			m_motionData.Core.Loops = loops;
 			m_motionData.Core.LoopType = loopType;
@@ -110,7 +112,7 @@ namespace LitMotionCpp
 		* 
 		* @return This builder to allow chaining multiple method calls.
 		*/
-		MotionBuilder& withOnCancel(std::function<void()> callback)
+		MotionBuilder<TValue, TOptions, TAdapter>& withOnCancel(std::function<void()> callback)
 		{
 			m_callbackData.OnCancelAction = callback;
 			return *this;
@@ -123,7 +125,7 @@ namespace LitMotionCpp
 		*
 		* @return This builder to allow chaining multiple method calls.
 		*/
-		MotionBuilder& withOnComplete(std::function<void()> callback)
+		MotionBuilder<TValue, TOptions, TAdapter>& withOnComplete(std::function<void()> callback)
 		{
 			m_callbackData.OnCompleteAction = callback;
 			return *this;
@@ -136,7 +138,7 @@ namespace LitMotionCpp
 		*
 		* @return This builder to allow chaining multiple method calls.
 		*/
-		MotionBuilder& withCancelOnError(bool cancelOnError=true)
+		MotionBuilder<TValue, TOptions, TAdapter>& withCancelOnError(bool cancelOnError=true)
 		{
 			m_callbackData.CancelOnError = cancelOnError;
 			return *this;
@@ -149,7 +151,7 @@ namespace LitMotionCpp
 		* 
 		* @return This builder to allow chaining multiple method calls.
 		*/
-		MotionBuilder& withBindOnSchedule(bool bindOnSchedule = true)
+		MotionBuilder<TValue, TOptions, TAdapter>& withBindOnSchedule(bool bindOnSchedule = true)
 		{
 			m_bindOnSchedule = bindOnSchedule;
 			return *this;
@@ -162,7 +164,7 @@ namespace LitMotionCpp
 		* 
 		* @return This builder to allow chaining multiple method calls.
 		*/
-		MotionBuilder& withScheduler(std::weak_ptr<IMotionScheduler<TValue, TOptions>> scheduler)
+		MotionBuilder<TValue, TOptions, TAdapter>& withScheduler(std::weak_ptr<IMotionScheduler<TValue, TOptions, TAdapter>> scheduler)
 		{
 			m_scheduler = scheduler;
 			return *this;
@@ -277,9 +279,11 @@ namespace LitMotionCpp
 		{
 			if (m_bindOnSchedule && m_callbackData.hasUpdateAction())
 			{
-				auto bindValue = evaluate<TValue>(
+				TAdapter adapter;
+				auto bindValue = adapter.evaluate(
 					m_motionData.StartValue,
 					m_motionData.EndValue,
+					m_motionData.Options,
 					MotionEvaluationContext{ EaseUtility::evaluate(0.0,m_motionData.Core.Ease) }
 				);
 				m_callbackData.invoke(bindValue);
@@ -289,11 +293,11 @@ namespace LitMotionCpp
 
 			if (m_scheduler.expired())
 			{
-				auto defaultScheduler = MotionScheduler::getDefault<TValue,TOptions>();
+				auto defaultScheduler = MotionScheduler::getDefault<TValue,TOptions,TAdapter>();
 				if (defaultScheduler.expired())
 				{
-					MotionScheduler::setDefault<TValue, TOptions>(std::make_shared<MainLoopMotionScheduler<TValue, TOptions>>(MotionTimeKind::Time));
-					defaultScheduler = MotionScheduler::getDefault<TValue,TOptions>();
+					MotionScheduler::setDefault<TValue, TOptions,TAdapter>(std::make_shared<MainLoopMotionScheduler<TValue, TOptions,TAdapter>>(MotionTimeKind::Time));
+					defaultScheduler = MotionScheduler::getDefault<TValue,TOptions, TAdapter>();
 				}
 				handle = defaultScheduler.lock()->schedule(m_motionData, m_callbackData);
 				m_motionData.Core.Curve = nullptr; // Prevent double deletion

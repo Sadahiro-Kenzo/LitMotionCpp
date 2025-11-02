@@ -7,33 +7,33 @@
 
 namespace LitMotionCpp
 {
-	template<typename TValue,typename TOptions>
-		requires std::derived_from<TOptions, IMotionOptions>
+	template<typename TValue,typename TOptions,typename TAdapter>
+		requires std::derived_from<TOptions, IMotionOptions>&& std::derived_from<TAdapter, IMotionAdapter<TValue, TOptions>>
 	class Cache
 	{
 	private:
 		friend class ManualMotionDispatcher;
 
-		static std::shared_ptr<MotionStorage<TValue,TOptions>> updateStorage;
-		static std::shared_ptr<UpdateRunner<TValue,TOptions>> updateRunner;
+		static std::shared_ptr<MotionStorage<TValue,TOptions, TAdapter>> updateStorage;
+		static std::shared_ptr<UpdateRunner<TValue,TOptions, TAdapter>> updateRunner;
 
-		static std::weak_ptr<MotionStorage<TValue,TOptions>> getOrCreate()
+		static std::weak_ptr<MotionStorage<TValue,TOptions, TAdapter>> getOrCreate()
 		{
 			if (!updateStorage)
 			{
-				auto storage = std::make_shared<MotionStorage<TValue,TOptions>>(MotionStorageManager::getCurrentStorageId());
+				auto storage = std::make_shared<MotionStorage<TValue,TOptions, TAdapter>>(MotionStorageManager::getCurrentStorageId());
 				MotionStorageManager::addStorage(storage);
 				updateStorage = storage;
 			}
 			return updateStorage;
 		}
 	};
-	template<typename TValue,typename TOptions>
-		requires std::derived_from<TOptions, IMotionOptions>
-	std::shared_ptr<MotionStorage<TValue,TOptions>> Cache<TValue,TOptions>::updateStorage;
-	template<typename TValue,typename TOptions>
-		requires std::derived_from<TOptions, IMotionOptions>
-	std::shared_ptr<UpdateRunner<TValue,TOptions>> Cache<TValue,TOptions>::updateRunner;
+	template<typename TValue,typename TOptions,typename TAdapter>
+		requires std::derived_from<TOptions, IMotionOptions>&& std::derived_from<TAdapter, IMotionAdapter<TValue, TOptions>>
+	std::shared_ptr<MotionStorage<TValue,TOptions,TAdapter>> Cache<TValue,TOptions,TAdapter>::updateStorage;
+	template<typename TValue,typename TOptions,typename TAdapter>
+		requires std::derived_from<TOptions, IMotionOptions>&& std::derived_from<TAdapter, IMotionAdapter<TValue, TOptions>>
+	std::shared_ptr<UpdateRunner<TValue,TOptions,TAdapter>> Cache<TValue,TOptions,TAdapter>::updateRunner;
 
 	class ManualMotionDispatcher
 	{
@@ -58,16 +58,16 @@ namespace LitMotionCpp
 		*/
 		static void reset();
 
-		template<typename TValue,typename TOptions>
-			requires std::derived_from<TOptions, IMotionOptions>
+		template<typename TValue,typename TOptions,typename TAdapter>
+			requires std::derived_from<TOptions, IMotionOptions>&& std::derived_from<TAdapter, IMotionAdapter<TValue, TOptions>>
 		static MotionHandle schedule(const MotionData<TValue,TOptions>& data, const MotionCallbackData& callbackData)
 		{
-			auto storage = Cache<TValue,TOptions>::getOrCreate();
-			if (!Cache<TValue,TOptions>::updateRunner)
+			auto storage = Cache<TValue,TOptions,TAdapter>::getOrCreate();
+			if (!Cache<TValue,TOptions,TAdapter>::updateRunner)
 			{
-				auto runner = std::make_shared<UpdateRunner<TValue,TOptions>>(storage, getTime(), getTime(), getTime());
+				auto runner = std::make_shared<UpdateRunner<TValue,TOptions,TAdapter>>(storage, getTime(), getTime(), getTime());
 				m_updateRunners.add(runner);
-				Cache<TValue,TOptions>::updateRunner = runner;
+				Cache<TValue,TOptions,TAdapter>::updateRunner = runner;
 			}
 
 			auto [entryIndex, version] = storage.lock()->append(data, callbackData);

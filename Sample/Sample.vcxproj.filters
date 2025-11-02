@@ -48,7 +48,6 @@
     </ClCompile>
     <ClCompile Include="Sample_0_CreateAndBind.cpp" />
     <ClCompile Include="SpriteExtensions.cpp" />
-    <ClCompile Include="VecmathMotionAdapter.cpp" />
     <ClCompile Include="DX12Canvas.cpp" />
     <ClCompile Include="TextLabelExtensions.cpp" />
     <ClCompile Include="Sample_0_Easing.cpp" />

@@ -73,7 +73,7 @@ namespace LitMotionCpp::Sample
 			Color4f red{ 1.0f,0.0f,0.0f,1.0f };
 			Color4f blue{ 0.0f,0.0f,1.0f,1.0f };
 
-			handle=LMotion::create<Color4f,NoOptions>(red, blue, 5.0f)
+			handle=LMotion::create<Color4f,NoOptions,Color4fMotionAdapter>(red, blue, 5.0f)
 				.bindWithState<ISprite>(targetColor.get(),&SpriteExtensions::ToColor);
 			AddHandle(handle);
 		}

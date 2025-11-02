@@ -6,7 +6,7 @@
 #include <vector>
 #include "MotionData.h"
 #include "MotionCallbackData.h"
-#include "MotionAdapter.h"
+#include "IMotionAdapter.h"
 #include "MotionHandle.h"
 #include "MotionStatus.h"
 #include "EaseUtility.h"
@@ -51,8 +51,8 @@ namespace LitMotionCpp
 		void reset(size_t startEntry);
 	};
 
-	template<typename TValue,typename TOptions>
-		requires std::derived_from<TOptions, IMotionOptions>
+	template<typename TValue,typename TOptions,typename TAdapter>
+		requires std::derived_from<TOptions, IMotionOptions> && std::derived_from<TAdapter, IMotionAdapter<TValue, TOptions>>
 	class MotionStorage:public IMotionStorage
 	{
 	private:
@@ -225,10 +225,15 @@ namespace LitMotionCpp
 			case LoopType::Incremental: endProgress = static_cast<float>(motion.Core.Loops); break;
 			}
 
-			auto easedEndProgress = EaseUtility::evaluate(endProgress, motion.Core.Ease);	//	ToDo: AnimationCurve.evaluate
+			float easedEndProgress;
+			if(motion.Core.Ease== Ease::CustomAnimationCurve && motion.Core.Curve)
+				easedEndProgress = motion.Core.Curve->evaluate(endProgress);
+			else
+				easedEndProgress = EaseUtility::evaluate(endProgress, motion.Core.Ease);
 
 			MotionEvaluationContext context{ easedEndProgress };
-			auto endValue = evaluate(motion.StartValue, motion.EndValue, context);
+			TAdapter adapter;
+			auto endValue = adapter.evaluate(motion.StartValue, motion.EndValue,motion.Options, context);
 
 #ifdef LIT_MOTION_CPP_ENABLE_EXCEPTION
 			try

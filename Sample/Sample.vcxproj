@@ -268,7 +268,6 @@
     <ClCompile Include="Sample_0_Menu.cpp" />
     <ClCompile Include="SpriteExtensions.cpp" />
     <ClCompile Include="TextLabelExtensions.cpp" />
-    <ClCompile Include="VecmathMotionAdapter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
