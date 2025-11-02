@@ -106,6 +106,19 @@ namespace LitMotionCpp
 		}
 
 		/**
+		* @brief Specify special parameters for each motion data.
+		*
+		* @param [in] options : Option value to specify
+		*
+		* @return This builder to allow chaining multiple method calls.
+		*/
+		MotionBuilder<TValue, TOptions, TAdapter>& withOptions(TOptions options)
+		{
+			m_motionData.Options = options;
+			return *this;
+		}
+
+		/**
 		* @brief Specify the callback when canceled.
 		* 
 		* @param [in] callback : Callback when canceled.
