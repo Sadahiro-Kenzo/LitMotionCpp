@@ -63,7 +63,7 @@ namespace LitMotionCpp::Sample
 		if (targetTransform)
 		{
 			handle=LMotion::create(-5.0f, 5.0f, 5.0f)
-				.bindWithState<ISprite>(targetTransform.get(),&SpriteExtensions::ToX);
+				.bind<ISprite>(targetTransform.get(),SpriteExtensions::ToX);
 			AddHandle(handle);
 		}
 
@@ -74,7 +74,7 @@ namespace LitMotionCpp::Sample
 			Color4f blue{ 0.0f,0.0f,1.0f,1.0f };
 
 			handle=LMotion::create<Color4f,NoOptions,Color4fMotionAdapter>(red, blue, 5.0f)
-				.bindWithState<ISprite>(targetColor.get(),&SpriteExtensions::ToColor);
+				.bind<ISprite>(targetColor.get(),SpriteExtensions::ToColor);
 			AddHandle(handle);
 		}
 
@@ -82,7 +82,7 @@ namespace LitMotionCpp::Sample
 		if (targetText)
 		{
 			handle=LMotion::create(0.0f, 10.0f, 5.0f)
-				.bindWithState<ITextLabel>(targetText.get(), &TextLabelExtensions::ToText);
+				.bind<ITextLabel>(targetText.get(), TextLabelExtensions::ToText);
 			AddHandle(handle);
 		}
 

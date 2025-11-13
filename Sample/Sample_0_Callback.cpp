@@ -48,7 +48,7 @@ namespace LitMotionCpp::Sample
 						}
 						Complete();
 					})
-				.bindWithState<ISprite>(target.get(), &SpriteExtensions::ToX);
+				.bind<ISprite>(target.get(), SpriteExtensions::ToX);
 		}
 
 		auto label = m_statusLabel.lock();

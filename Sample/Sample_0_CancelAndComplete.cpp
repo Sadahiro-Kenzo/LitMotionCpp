@@ -55,7 +55,7 @@ namespace LitMotionCpp::Sample
 		{
 			m_handle1=LMotion::create(-5.0f, 5.0f, 2.0f)
 				.withLoops(999)
-				.bindWithState<ISprite>(target.get(), &SpriteExtensions::ToX);
+				.bind<ISprite>(target.get(), SpriteExtensions::ToX);
 		}
 
 		target = m_target2.lock();
@@ -63,7 +63,7 @@ namespace LitMotionCpp::Sample
 		{
 			m_handle2 = LMotion::create(-5.0f, 5.0f, 2.0f)
 				.withLoops(999)
-				.bindWithState<ISprite>(target.get(), &SpriteExtensions::ToX);
+				.bind<ISprite>(target.get(), SpriteExtensions::ToX);
 		}
 
 		SampleScene::onStart();

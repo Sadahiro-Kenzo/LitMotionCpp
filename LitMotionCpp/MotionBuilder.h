@@ -201,21 +201,7 @@ namespace LitMotionCpp
 		}
 
 		/**
-		* @brief Create motion and bind it to a specific object, property, etc.
-		* 
-		* @param[in] action : Action that handles binding
-		* 
-		* @return Handle of the created motion data.
-		*/
-		MotionHandle bind(std::function<void(TValue&)> action)
-		{
-			setMotionData();
-			setCallbackData(action);
-			return schedule();
-		};
-
-		/**
-		* @brief Create motion and bind it to a specific object. Unlike the regular Bind method, it avoids allocation by closure by passing an object.
+		* @brief Create motion and bind it to a specific object.
 		* 
 		* @tparam TState : Type of state
 		* @param [in] state : Motion state
@@ -224,15 +210,51 @@ namespace LitMotionCpp
 		* @return Handle of the created motion data.
 		*/
 		template<typename TState>
-		MotionHandle bindWithState(TState* state, std::function<void(TValue&, TState*)> action)
+		MotionHandle bind(TState* state,void(*action)(TValue, TState*)) requires IsValueType<TValue>
 		{
 			setMotionData();
-			setCallbackData<TState>(state,action);
+			m_callbackData.setUpdateAction<TValue, TState>(state, action);
 			return schedule();
 		}
 
 		/**
-		* @brief Create motion and bind it to a specific object. Unlike the regular Bind method, it avoids allocation by closure by passing an object.
+		* @brief Create motion and bind it to a specific object.
+		*
+		* @tparam TState : Type of state
+		* @param [in] state : Motion state
+		* @param[in] action : Action that handles binding
+		*
+		* @return Handle of the created motion data.
+		*/
+		template<typename TState>
+		MotionHandle bind(TState* state, void(*action)(const TValue&, TState*)) requires IsReferenceType<TValue>
+		{
+			setMotionData();
+			m_callbackData.setUpdateAction<TValue, TState>(state, action);
+			return schedule();
+		}
+
+		/**
+		* @brief Create motion and bind it to a specific object.
+		*
+		* @tparam TState1 : Type of state1
+		* @tparam TState2 : Type of state2
+		* @param [in] state1 : Motion state1
+		* @param [in] state2 : Motion state2
+		* @param[in] action : Action that handles binding
+		*
+		* @return Handle of the created motion data.
+		*/
+		template<typename TState1, typename TState2>
+		MotionHandle bind(TState1* state1, TState2* state2, void(*action)(TValue, TState1*, TState2*)) requires IsValueType<TValue>
+		{
+			setMotionData();
+			m_callbackData.setUpdateAction<TValue, TState1, TState2>(state1, state2, action);
+			return schedule();
+		}
+
+		/**
+		* @brief Create motion and bind it to a specific object.
 		*
 		* @tparam TState1 : Type of state1
 		* @tparam TState2 : Type of state2
@@ -243,15 +265,36 @@ namespace LitMotionCpp
 		* @return Handle of the created motion data.
 		*/
 		template<typename TState1,typename TState2>
-		MotionHandle bindWithState(TState1* state1,TState2* state2, std::function<void(TValue&, TState1*,TState2*)> action)
+		MotionHandle bind(TState1* state1,TState2* state2, void(*action)(const TValue&, TState1*, TState2*)) requires IsReferenceType<TValue>
 		{
 			setMotionData();
-			setCallbackData<TState1,TState2>(state1,state2, action);
+			m_callbackData.setUpdateAction<TValue,TState1,TState2>(state1,state2, action);
 			return schedule();
 		}
 
 		/**
-		* @brief Create motion and bind it to a specific object. Unlike the regular Bind method, it avoids allocation by closure by passing an object.
+		* @brief Create motion and bind it to a specific object.
+		*
+		* @tparam TState1 : Type of state1
+		* @tparam TState2 : Type of state2
+		* @tparam TState3 : Type of state3
+		* @param [in] state1 : Motion state1
+		* @param [in] state2 : Motion state2
+		* @param [in] state3 : Motion state3
+		* @param[in] action : Action that handles binding
+		*
+		* @return Handle of the created motion data.
+		*/
+		template<typename TState1, typename TState2, typename TState3>
+		MotionHandle bind(TState1* state1, TState2* state2, TState3* state3, void(*action)(TValue, TState1*, TState2*, TState3*)) requires IsValueType<TValue>
+		{
+			setMotionData();
+			m_callbackData.setUpdateAction<TValue, TState1, TState2, TState3>(state1, state2, state3, action);
+			return schedule();
+		}
+
+		/**
+		* @brief Create motion and bind it to a specific object.
 		*
 		* @tparam TState1 : Type of state1
 		* @tparam TState2 : Type of state2
@@ -264,10 +307,10 @@ namespace LitMotionCpp
 		* @return Handle of the created motion data.
 		*/
 		template<typename TState1,typename TState2,typename TState3>
-		MotionHandle bindWithState(TState1* state1,TState2* state2,TState3* state3, std::function<void(TValue&, TState1*,TState2*,TState3*)> action)
+		MotionHandle bind(TState1* state1,TState2* state2,TState3* state3, void(*action)(const TValue&, TState1*, TState2*, TState3*)) requires IsReferenceType<TValue>
 		{
 			setMotionData();
-			setCallbackData<TState1,TState2,TState3>(state1,state2,state3, action);
+			m_callbackData.setUpdateAction<TValue,TState1,TState2,TState3>(state1,state2,state3, action);
 			return schedule();
 		}
 	private:
@@ -281,25 +324,6 @@ namespace LitMotionCpp
 				m_customCurveBegin = nullptr;
 				m_customCurveEnd = nullptr;
 			}
-		}
-		void setCallbackData(std::function<void(TValue&)> action)
-		{
-			m_callbackData.setUpdateAction<TValue>(action);
-		}
-		template<typename TState>
-		void setCallbackData(TState* state,std::function<void(TValue&,TState*)> action)
-		{
-			m_callbackData.setUpdateActionWithState1<TValue, TState>(state, action);
-		}
-		template<typename TState1,typename TState2>
-		void setCallbackData(TState1* state1,TState2* state2, std::function<void(TValue&, TState1*,TState2*)> action)
-		{
-			m_callbackData.setUpdateActionWithState1<TValue, TState1,TState2>(state1,state2, action);
-		}
-		template<typename TState1,typename TState2,typename TState3>
-		void setCallbackData(TState1* state1,TState2* state2,TState3* state3, std::function<void(TValue&, TState1*,TState2*,TState3*)> action)
-		{
-			m_callbackData.setUpdateActionWithState1<TValue, TState1,TState2,TState3>(state1,state2,state3, action);
 		}
 		MotionHandle schedule()
 		{

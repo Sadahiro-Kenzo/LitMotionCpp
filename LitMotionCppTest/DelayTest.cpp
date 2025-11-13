@@ -4,6 +4,11 @@
 
 using namespace LitMotionCpp;
 
+struct State
+{
+	float value = 0.0f;
+};
+
 TEST(DelayTest, Test_Delay)
 {
 	ManualMotionDispatcher::reset();
@@ -66,19 +71,19 @@ TEST(DelayTest, Test_Delay_SkipValuesDuringDelay)
 {
 	ManualMotionDispatcher::reset();
 
-	auto value = 0.0f;
+	State state;
 	auto handle = LMotion::create(1.0f, 2.0f, 0.5f)
 		.withDelay(0.5f, DelayType::FirstLoop, false)
-		.bind([&value](float x) {value = x; });
+		.bind<State>(&state,[](float x,State* pState) {pState->value = x; });
 	ManualMotionDispatcher::update(0.1f);
-	EXPECT_TRUE(0.9f < value);
+	EXPECT_TRUE(0.9f < state.value);
 
 	handle.cancel();
-	value = 0.0f;
+	state.value = 0.0f;
 	handle = LMotion::create(1.0f, 2.0f, 0.5f)
 		.withDelay(0.5f, DelayType::FirstLoop, true)
-		.bind([&value](float x) {value = x; });
+		.bind<State>(&state,[](float x,State* pState) {pState->value = x; });
 	ManualMotionDispatcher::update(0.1f);
-	EXPECT_TRUE(0.9f > value);
+	EXPECT_TRUE(0.9f > state.value);
 	handle.cancel();
 }

@@ -3,6 +3,12 @@
 
 using namespace LitMotionCpp;
 
+struct State
+{
+	int created = 0;
+	int completed = 0;
+};
+
 TEST(CallbackTest, Test_OnCancel)
 {
 	ManualMotionDispatcher::reset();
@@ -37,25 +43,27 @@ TEST(CallbackTest, Test_CreateOnCallback)
 {
 	ManualMotionDispatcher::reset();
 
-	auto created = false;
-	auto completed = false;
+	State state;
 	auto handle = LMotion::create(0.0f, 10.0f, 1.0f)
-		.bind([&created, &completed](float x)
+		.bind<State>(&state, [](float x, State* pState)
 			{
-				if (x > 5.0f && !created)
+				if (x > 5.0f && pState->created==0)
 				{
 					LMotion::create(0.0f, 10.0f, 1.0f)
-						.withOnComplete([&completed]() {completed = true; })
+						.withOnComplete([pState]()
+							{
+								pState->completed = 1;
+							})
 						.runWithoutBinding();
-					created = true;
+					pState->created = 1;
 				}
 			});
 
 	ManualMotionDispatcher::update(1.1f);
 	ManualMotionDispatcher::update(1.1f);
 
-	EXPECT_TRUE(created);
-	EXPECT_TRUE(completed);
+	EXPECT_TRUE(state.created!=0);
+	EXPECT_TRUE(state.completed!=0);
 }
 
 #ifdef LIT_MOTION_CPP_ENABLE_EXCEPTION
@@ -165,7 +173,7 @@ TEST(CallbackTest, Test_WithCancelOnError)
 	LMotion::create(0.0f, 10.0f, 0.5f)
 		.withCancelOnError()
 		.withOnComplete([&completed]() {completed = true; })
-		.bind([](float x) {throw std::exception("Test"); });
+		.bind<void>(nullptr,[](float x,void*) {throw std::exception("Test"); });
 
 	ManualMotionDispatcher::update(0.7f);
 	EXPECT_FALSE(completed);
@@ -174,7 +182,7 @@ TEST(CallbackTest, Test_WithCancelOnError)
 TEST(CallbackTest, Test_ThorwExceptionInsideBind_ThenCompleteManually)
 {
 	auto handle=LMotion::create(0.0f, 10.0f, 0.5f)
-		.bind([](float x) {throw std::exception("Test"); });
+		.bind<void>(nullptr,[](float x,void*) {throw std::exception("Test"); });
 
 	handle.complete();
 	EXPECT_STREQ("Exception: Test", MotionDispatcher::getLastError());
@@ -233,7 +241,7 @@ TEST(CallbackTest, Test_WithCancelOnError)
 			LMotion::create(0.0f, 10.0f, 0.5f)
 				.withCancelOnError()
 				.withOnComplete([&completed]() {completed = true; })
-				.bind([](float x) {throw std::exception("Test"); });
+				.bind<void>(nullptr,[](float x,void*) {throw std::exception("Test"); });
 
 			ManualMotionDispatcher::update(0.7f);
 			EXPECT_FALSE(completed);
@@ -246,7 +254,7 @@ TEST(CallbackTest, Test_ThorwExceptionInsideBind_ThenCompleteManually)
 	EXPECT_THROW(
 		{
 			auto handle = LMotion::create(0.0f, 10.0f, 0.5f)
-				.bind([](float x) {throw std::exception("Test"); });
+				.bind<void>(nullptr,[](float x,void*) {throw std::exception("Test"); });
 
 			handle.complete();
 			EXPECT_STREQ("Exception: Test", MotionDispatcher::getLastError());

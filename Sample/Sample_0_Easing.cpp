@@ -84,7 +84,7 @@ namespace LitMotionCpp::Sample
 		{
 			handle=LMotion::create(-5.0f, 5.0f, 3.0f)
 				.withEase(Ease::Linear)
-				.bindWithState<ISprite>(target.get(), &SpriteExtensions::ToX);
+				.bind<ISprite>(target.get(), SpriteExtensions::ToX);
 			AddHandle(handle);
 		}
 
@@ -93,7 +93,7 @@ namespace LitMotionCpp::Sample
 		{
 			handle = LMotion::create(-5.0f, 5.0f, 3.0f)
 				.withEase(Ease::InQuad)
-				.bindWithState<ISprite>(target.get(), &SpriteExtensions::ToX);
+				.bind<ISprite>(target.get(), SpriteExtensions::ToX);
 			AddHandle(handle);
 		}
 
@@ -102,7 +102,7 @@ namespace LitMotionCpp::Sample
 		{
 			handle = LMotion::create(-5.0f, 5.0f, 3.0f)
 				.withEase(Ease::OutBounce)
-				.bindWithState<ISprite>(target.get(), &SpriteExtensions::ToX);
+				.bind<ISprite>(target.get(), SpriteExtensions::ToX);
 			AddHandle(handle);
 		}
 
@@ -111,7 +111,7 @@ namespace LitMotionCpp::Sample
 		{
 			handle = LMotion::create(-5.0f, 5.0f, 3.0f)
 				.withEase(std::begin(keyframes), std::end(keyframes))
-				.bindWithState<ISprite>(target.get(), &SpriteExtensions::ToX);
+				.bind<ISprite>(target.get(), SpriteExtensions::ToX);
 			AddHandle(handle);
 		}
 

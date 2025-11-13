@@ -43,7 +43,7 @@ namespace LitMotionCpp::Sample
 					.withEase(Ease::InOutSine)
 					.withDelay(i * 0.2f)
 					.withBindOnSchedule()
-					.bindWithState<ISprite>(target.get(), &SpriteExtensions::ToX);
+					.bind<ISprite>(target.get(), SpriteExtensions::ToX);
 				AddHandle(handle);
 			}
 		}
