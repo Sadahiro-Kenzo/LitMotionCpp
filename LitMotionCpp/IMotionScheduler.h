@@ -22,11 +22,11 @@ namespace LitMotionCpp
 		virtual double getTime() = 0;
 	};
 
-	enum class MotionTimeKind
+	/*enum class MotionTimeKind
 	{
 		Time,
 		UnscaledTime,
 		Realtime,
-	};
+	};*/
 
 }//namespace

@@ -40,10 +40,10 @@ namespace LitMotionCpp
 
 		~MotionBuilder()
 		{
-			if(m_motionData.Core.Curve)
+			if(m_motionData.Core.Parameters.AnimationCurve)
 			{
-				delete m_motionData.Core.Curve;
-				m_motionData.Core.Curve = nullptr;
+				delete m_motionData.Core.Parameters.AnimationCurve;
+				m_motionData.Core.Parameters.AnimationCurve = nullptr;
 			}
 		}
 
@@ -56,7 +56,7 @@ namespace LitMotionCpp
 		*/
 		MotionBuilder<TValue,TOptions,TAdapter>& withEase(Ease ease)
 		{
-			m_motionData.Core.Ease = ease;
+			m_motionData.Core.Parameters.Ease = ease;
 			return *this;
 		}
 
@@ -73,7 +73,7 @@ namespace LitMotionCpp
 		*/
 		MotionBuilder<TValue, TOptions, TAdapter>& withEase(const Keyframe* begin,const Keyframe* end)
 		{
-			m_motionData.Core.Ease = Ease::CustomAnimationCurve;
+			m_motionData.Core.Parameters.Ease = Ease::CustomAnimationCurve;
 			m_customCurveBegin = begin;
 			m_customCurveEnd = end;
 			return *this;
@@ -90,8 +90,8 @@ namespace LitMotionCpp
 		*/
 		MotionBuilder<TValue, TOptions, TAdapter>& withDelay(float delay,DelayType delayType=DelayType::FirstLoop,bool skipValuesDuringDelay=true)
 		{
-			m_motionData.Core.Delay = delay;
-			m_motionData.Core.DelayType = delayType;
+			m_motionData.Core.Parameters.Delay = delay;
+			m_motionData.Core.Parameters.DelayType = delayType;
 			m_callbackData.SkipValuesDuringDelay = skipValuesDuringDelay;
 			return *this;
 		}
@@ -106,8 +106,8 @@ namespace LitMotionCpp
 		*/
 		MotionBuilder<TValue, TOptions, TAdapter>& withLoops(int loops,LoopType loopType=LoopType::Restart)
 		{
-			m_motionData.Core.Loops = loops;
-			m_motionData.Core.LoopType = loopType;
+			m_motionData.Core.Parameters.Loops = loops;
+			m_motionData.Core.Parameters.LoopType = loopType;
 			return *this;
 		}
 
@@ -316,11 +316,11 @@ namespace LitMotionCpp
 	private:
 		void setMotionData()
 		{
-			m_motionData.Core.Status = MotionStatus::Scheduled;
+			m_motionData.Core.State.Status = MotionStatus::Scheduled;
 
 			if (m_customCurveBegin && m_customCurveEnd)
 			{
-				m_motionData.Core.Curve = AnimationCurve::create(m_customCurveBegin, m_customCurveEnd);
+				m_motionData.Core.Parameters.AnimationCurve = AnimationCurve::create(m_customCurveBegin, m_customCurveEnd);
 				m_customCurveBegin = nullptr;
 				m_customCurveEnd = nullptr;
 			}
@@ -335,8 +335,9 @@ namespace LitMotionCpp
 					m_motionData.EndValue,
 					m_motionData.Options,
 					MotionEvaluationContext{
-						m_motionData.Core.Ease == Ease::CustomAnimationCurve ? m_motionData.Core.Curve->evaluate(0.0f)
-						:EaseUtility::evaluate(0.0f,m_motionData.Core.Ease)
+						.Progress=m_motionData.Core.Parameters.Ease == Ease::CustomAnimationCurve ? m_motionData.Core.Parameters.AnimationCurve->evaluate(0.0f)
+						:EaseUtility::evaluate(0.0f,m_motionData.Core.Parameters.Ease),
+						.Time=0.0
 					}
 				);
 				m_callbackData.invoke(bindValue);
@@ -353,12 +354,12 @@ namespace LitMotionCpp
 					defaultScheduler = MotionScheduler::getDefault<TValue,TOptions, TAdapter>();
 				}
 				handle = defaultScheduler.lock()->schedule(m_motionData, m_callbackData);
-				m_motionData.Core.Curve = nullptr; // Prevent double deletion
+				m_motionData.Core.Parameters.AnimationCurve = nullptr; // Prevent double deletion
 			}
 			else
 			{
 				handle=m_scheduler.lock()->schedule(m_motionData, m_callbackData);
-				m_motionData.Core.Curve = nullptr; // Prevent double deletion
+				m_motionData.Core.Parameters.AnimationCurve = nullptr; // Prevent double deletion
 			}
 
 			return handle;

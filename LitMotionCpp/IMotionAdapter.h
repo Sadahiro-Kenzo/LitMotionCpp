@@ -8,9 +8,8 @@ namespace LitMotionCpp
 	*/
 	struct MotionEvaluationContext
 	{
-		float Progress;	//!< Progress (0-1)
-
-		MotionEvaluationContext(float value):Progress(value){}
+		float Progress=0.0f;	//!< Progress (0-1)
+		double Time = 0.0;		//!< Current motion time
 	};
 
 	/**

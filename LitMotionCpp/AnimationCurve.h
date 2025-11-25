@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include <functional>
-#include "AnimationCurve.h"
 namespace LitMotionCpp
 {
 	enum class WeightedMode

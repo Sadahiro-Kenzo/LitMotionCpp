@@ -148,6 +148,7 @@
     <ClInclude Include="Error.h" />
     <ClInclude Include="FastListCore.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="IJobParallelFor.h" />
     <ClInclude Include="IMotionOptions.h" />
     <ClInclude Include="IntegerOptions.h" />
     <ClInclude Include="MainLoopMotionScheduler.h" />
@@ -165,7 +166,9 @@
     <ClInclude Include="MotionStatus.h" />
     <ClInclude Include="MotionStorage.h" />
     <ClInclude Include="MotionStorageManager.h" />
+    <ClInclude Include="MotionUpdateJob.h" />
     <ClInclude Include="NoOptions.h" />
+    <ClInclude Include="ParallelJobScheduler.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PrimitiveMotionAdapter.h" />
     <ClInclude Include="UpdateRunner.h" />
@@ -175,11 +178,11 @@
     <ClCompile Include="EaseUtility.cpp" />
     <ClCompile Include="Error.cpp" />
     <ClCompile Include="ManualMotionDispatcher.cpp" />
-    <ClCompile Include="MotionData.cpp" />
     <ClCompile Include="MotionDispatcher.cpp" />
     <ClCompile Include="MotionHandle.cpp" />
     <ClCompile Include="MotionStorage.cpp" />
     <ClCompile Include="MotionStorageManager.cpp" />
+    <ClCompile Include="ParallelJobScheduler.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

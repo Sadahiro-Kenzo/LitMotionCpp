@@ -14,12 +14,12 @@ namespace LitMotionCpp
 			Error::playbackSpeedMustBeZeroOrGreater();
 		}
 #endif
-		MotionStorageManager::getMotionDataRef(*this).PlaybackSpeed = value;
+		MotionStorageManager::getMotionDataRef(*this).State.PlaybackSpeed = value;
 	}
 
 	float MotionHandle::getPlaybackSpeed()
 	{
-		return MotionStorageManager::getMotionDataRef(*this).PlaybackSpeed;
+		return MotionStorageManager::getMotionDataRef(*this).State.PlaybackSpeed;
 	}
 
 	bool MotionHandle::isActive() const

@@ -111,11 +111,11 @@ namespace LitMotionCpp
 			m_tail--;
 
 			// delete AnimationCurve if exists
-			AnimationCurve* curve = m_dataArray[denseIndex].Core.Curve;
+			IAnimationCurve* curve = m_dataArray[denseIndex].Core.Parameters.AnimationCurve;
 			if (curve)
 			{
 				delete curve;
-				m_dataArray[denseIndex].Core.Curve = nullptr;
+				m_dataArray[denseIndex].Core.Parameters.AnimationCurve = nullptr;
 			}
 
 			// swap elements
@@ -168,7 +168,7 @@ namespace LitMotionCpp
 				return false;
 			}
 
-			auto status = m_dataArray[denseIndex].Core.Status;
+			auto status = m_dataArray[denseIndex].Core.State.Status;
 			return status == MotionStatus::Scheduled || status == MotionStatus::Delayed || status == MotionStatus::Playing;
 		}
 
@@ -179,9 +179,9 @@ namespace LitMotionCpp
 			assert(0 <= denseIndex && denseIndex < m_tail);
 
 			auto& motion = getDataSpan()[denseIndex];
-			assert(0 < entry.Version && entry.Version == handle.Version && motion.Core.Status != MotionStatus::None);
+			assert(0 < entry.Version && entry.Version == handle.Version && motion.Core.State.Status != MotionStatus::None);
 
-			motion.Core.Status = MotionStatus::Canceled;
+			motion.Core.State.Status = MotionStatus::Canceled;
 			auto& callbackData = getCallbacksSpan()[denseIndex];
 			if (callbackData.OnCancelAction)
 			{
@@ -196,9 +196,11 @@ namespace LitMotionCpp
 			assert(0 <= denseIndex && denseIndex < m_tail);
 
 			auto& motion = getDataSpan()[denseIndex];
-			assert(0 < entry.Version && entry.Version == handle.Version && motion.Core.Status != MotionStatus::None);
+			auto& state = motion.Core.State;
+			auto& parameters = motion.Core.Parameters;
+			assert(0 < entry.Version && entry.Version == handle.Version && state.Status != MotionStatus::None);
 
-			if (motion.Core.Loops < 0)
+			if (parameters.Loops < 0)
 			{
 				//	ToDo: Debug Log Message
 				return;
@@ -215,26 +217,8 @@ namespace LitMotionCpp
 #endif
 			callbackData.IsCallbackRunning = true;
 
-			// To avoid duplication of Complete processing, it is treated as canceled internally.
-			motion.Core.Status = MotionStatus::Canceled;
-
-			auto endProgress = 1.0f;
-			switch (motion.Core.LoopType)
-			{
-			case LoopType::Yoyo:endProgress = motion.Core.Loops % 2 == 0 ? 0.0f : 1.0f; break;
-			case LoopType::Incremental: endProgress = static_cast<float>(motion.Core.Loops); break;
-			}
-
-			float easedEndProgress;
-			if(motion.Core.Ease== Ease::CustomAnimationCurve && motion.Core.Curve)
-				easedEndProgress = motion.Core.Curve->evaluate(endProgress);
-			else
-				easedEndProgress = EaseUtility::evaluate(endProgress, motion.Core.Ease);
-
-			MotionEvaluationContext context{ easedEndProgress };
-			TAdapter adapter;
-			auto endValue = adapter.evaluate(motion.StartValue, motion.EndValue,motion.Options, context);
-
+			TValue endValue;
+			motion.complete<TAdapter>(endValue);
 #ifdef LIT_MOTION_CPP_ENABLE_EXCEPTION
 			try
 			{

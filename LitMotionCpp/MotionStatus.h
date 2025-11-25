@@ -63,7 +63,8 @@ namespace LitMotionCpp
 	enum class LoopType
 	{
 		Restart,	//!< Repeat from beginning.
-		Yoyo,		//!< Cycles back and forth between the end and start values.
+		Flip,		//!< Cycles back and forth between the end and start values.
 		Incremental,//!< Increase the value each time the repeats.
+		Yoyo,		//!< Cycles back and forth between the end and start values.
 	};
 }//namespace
