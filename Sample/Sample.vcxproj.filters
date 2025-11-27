@@ -39,6 +39,7 @@
     <ClInclude Include="SampleScene.h" />
     <ClInclude Include="NotifyMemoryLeak.h" />
     <ClInclude Include="JobSystem.h" />
+    <ClInclude Include="DirectXMathAnimationCurve.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -60,6 +61,7 @@
     <ClCompile Include="Message.cpp" />
     <ClCompile Include="SampleScene.cpp" />
     <ClCompile Include="JobSystem.cpp" />
+    <ClCompile Include="DirectXMathAnimationCurve.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

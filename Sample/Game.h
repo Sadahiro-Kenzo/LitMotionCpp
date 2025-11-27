@@ -80,6 +80,7 @@ private:
     void CreateWindowSizeDependentResources();
 
     void initializeJobSystem();
+    void initializeAnimationCurve();
 
     // Device resources.
     std::unique_ptr<DX::DeviceResources>        m_deviceResources;

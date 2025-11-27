@@ -224,6 +224,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="d3dx12.h" />
+    <ClInclude Include="DirectXMathAnimationCurve.h" />
     <ClInclude Include="DX12Canvas.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="ICanvas.h" />
@@ -248,6 +249,7 @@
     <ClInclude Include="VecmathMotionAdapter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DirectXMathAnimationCurve.cpp" />
     <ClCompile Include="DX12Canvas.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="JobSystem.cpp" />

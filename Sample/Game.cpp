@@ -23,6 +23,7 @@
 #include <DirectXHelpers.h>
 #include "Message.h"
 #include "JobSystem.h"
+#include "DirectXMathAnimationCurve.h"
 
 extern void ExitGame() noexcept;
 
@@ -76,6 +77,7 @@ void Game::Initialize(HWND window, int width, int height)
     CreateWindowSizeDependentResources();
 
 	initializeJobSystem();
+	initializeAnimationCurve();
 
     // TODO: Change the timer settings if you want something other than the default variable timestep mode.
     // e.g. for 60 FPS fixed timestep update logic, call:
@@ -454,6 +456,13 @@ void Game::initializeJobSystem()
 			    job.execute(static_cast<int>(index));
 			}, size, innerLoopBatchCount);
 		handle.wait();
+		});
+}
+
+void Game::initializeAnimationCurve()
+{
+    AnimationCurve::setFactory([](const Keyframe* begin, const Keyframe* end, WrapMode preMode, WrapMode postMode) -> AnimationCurve* {
+        return new DirectXMathAnimationCurve(begin,end,preMode,postMode);
 		});
 }
 
