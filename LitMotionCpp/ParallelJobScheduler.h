@@ -1,7 +1,6 @@
 #pragma once
 #include <functional>
-
-struct IJobParallelFor;
+#include "IJobParallelFor.h"
 
 /**
 * @brief execute IJobParallelFor

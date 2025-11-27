@@ -79,6 +79,8 @@ private:
     void CreateDeviceDependentResources();
     void CreateWindowSizeDependentResources();
 
+    void initializeJobSystem();
+
     // Device resources.
     std::unique_ptr<DX::DeviceResources>        m_deviceResources;
 

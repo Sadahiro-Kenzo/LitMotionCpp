@@ -228,6 +228,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="ICanvas.h" />
     <ClInclude Include="Interfaces.h" />
+    <ClInclude Include="JobSystem.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="NotifyMemoryLeak.h" />
     <ClInclude Include="pch.h" />
@@ -249,6 +250,7 @@
   <ItemGroup>
     <ClCompile Include="DX12Canvas.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="JobSystem.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="DeviceResources.cpp" />
     <ClCompile Include="Message.cpp" />

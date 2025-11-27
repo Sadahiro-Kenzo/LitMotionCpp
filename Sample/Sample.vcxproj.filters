@@ -38,6 +38,7 @@
     <ClInclude Include="Message.h" />
     <ClInclude Include="SampleScene.h" />
     <ClInclude Include="NotifyMemoryLeak.h" />
+    <ClInclude Include="JobSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -58,6 +59,7 @@
     <ClCompile Include="Sample_0_Menu.cpp" />
     <ClCompile Include="Message.cpp" />
     <ClCompile Include="SampleScene.cpp" />
+    <ClCompile Include="JobSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

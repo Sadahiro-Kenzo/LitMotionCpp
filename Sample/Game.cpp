@@ -22,6 +22,7 @@
 #include <WICTextureLoader.h>
 #include <DirectXHelpers.h>
 #include "Message.h"
+#include "JobSystem.h"
 
 extern void ExitGame() noexcept;
 
@@ -73,6 +74,8 @@ void Game::Initialize(HWND window, int width, int height)
 
     m_deviceResources->CreateWindowSizeDependentResources();
     CreateWindowSizeDependentResources();
+
+	initializeJobSystem();
 
     // TODO: Change the timer settings if you want something other than the default variable timestep mode.
     // e.g. for 60 FPS fixed timestep update logic, call:
@@ -440,5 +443,17 @@ void Game::drawText(DX12Canvas& canvas)
         m_spriteFont->DrawString(m_spriteBatch.get(), label->GetText(), pos,color);
 	}
     m_spriteBatch->End();
+}
+
+void Game::initializeJobSystem()
+{
+	JobSystem::initialize(4);
+
+	ParallelJobScheduler::setExecuter([](IJobParallelFor& job, size_t size, size_t innerLoopBatchCount){
+        auto handle=JobSystem::schedule([&job](size_t index) {
+			    job.execute(static_cast<int>(index));
+			}, size, innerLoopBatchCount);
+		handle.wait();
+		});
 }
 
