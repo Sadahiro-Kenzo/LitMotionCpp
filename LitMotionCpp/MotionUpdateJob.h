@@ -1,5 +1,6 @@
 #pragma once
 #include <cassert>
+#include <mutex>
 #include <span>
 #include <vector>
 #include "IJobParallelFor.h"
@@ -30,6 +31,7 @@ namespace LitMotionCpp
 		std::span<MotionData<TValue, TOptions>> DataSpan;
 		std::vector<TValue>& Output;
 		std::vector<int>& CompletedIndex;
+		std::mutex CompletedIndexMutex;
 		const double DeltaTime;
 		const double UnscaledDeltaTime;
 		const double RealDeltaTime;
@@ -75,6 +77,8 @@ namespace LitMotionCpp
 			}
 			else if ((!state.IsPreserved && state.Status == MotionStatus::Completed) || state.Status == MotionStatus::Canceled)
 			{
+				std::lock_guard<std::mutex> lock(CompletedIndexMutex);
+
 				CompletedIndex.emplace_back(index);
 				state.Status = MotionStatus::Disposed;
 			}
