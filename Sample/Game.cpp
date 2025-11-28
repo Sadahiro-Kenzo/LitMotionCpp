@@ -185,7 +185,7 @@ void Game::Update(DX::StepTimer const& timer)
 
     // TODO: Add your game logic here.
     MotionDispatcher::setTime(timer.GetTotalSeconds());
-    MotionDispatcher::update();
+    MotionDispatcher::update(MotionScheduler::getDefaultScheduler());
 
 	m_keyboardTracker.Update(m_keyboard->GetState());
 	m_scenes[m_currentScene]->onUpdate(*this);

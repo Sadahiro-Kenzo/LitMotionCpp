@@ -8,6 +8,8 @@
 
 namespace LitMotionCpp
 {
+	class MotionScheduler;
+
 	class MotionDispatcher
 	{
 	public:
@@ -101,8 +103,12 @@ namespace LitMotionCpp
 
 		/**
 		* @brief update motions. call in main loop.
+		* 
+		* Update all motions registered in MotionScheduler of same PlayerLoopTiming.
+		* 
+		* @param [in] scheduler : MotionScheduler to update.
 		*/
-		static void update();
+		static void update(const MotionScheduler& scheduler);
 
 		/*@
 		* @brief get last exception message.

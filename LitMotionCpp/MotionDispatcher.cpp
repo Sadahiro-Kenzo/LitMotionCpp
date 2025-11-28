@@ -2,6 +2,7 @@
 #include <format>
 #include <string>
 #include "MotionDispatcher.h"
+#include "MotionScheduler.h"
 
 namespace LitMotionCpp
 {
@@ -18,14 +19,14 @@ namespace LitMotionCpp
 		s_time = value;
 	}
 
-	void MotionDispatcher::update()
+	void MotionDispatcher::update(const MotionScheduler& scheduler)
 	{
 		if (fastUpdateRunners.empty())
 		{
 			return;
 		}
 
-		auto span = fastUpdateRunners[0].asSpan();
+		auto span = fastUpdateRunners[scheduler.getPlayerLoopTiming()].asSpan();
 		for (auto& i : span)
 		{
 			i.lock()->update(s_time, s_time, s_time);
