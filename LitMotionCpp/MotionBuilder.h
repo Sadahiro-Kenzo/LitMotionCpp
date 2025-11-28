@@ -2,10 +2,8 @@
 #include <cassert>
 #include <functional>
 #include <memory>
-#include "IMotionScheduler.h"
-#include "MotionScheduler.h"
-#include "MainLoopMotionScheduler.h"
 #include "MotionData.h"
+#include "MotionScheduler.h"
 #include "MotionStatus.h"
 #include "MotionCallbackData.h"
 #include "PrimitiveMotionAdapter.h"
@@ -24,7 +22,7 @@ namespace LitMotionCpp
 	class MotionBuilder
 	{
 	private:
-		std::weak_ptr<IMotionScheduler<TValue,TOptions, TAdapter>> m_scheduler;
+		MotionScheduler m_scheduler;
 		std::function<void(TValue)> m_updateAction;
 		MotionData<TValue,TOptions> m_motionData;
 		MotionCallbackData m_callbackData;
@@ -183,7 +181,7 @@ namespace LitMotionCpp
 		* 
 		* @return This builder to allow chaining multiple method calls.
 		*/
-		MotionBuilder<TValue, TOptions, TAdapter>& withScheduler(std::weak_ptr<IMotionScheduler<TValue, TOptions, TAdapter>> scheduler)
+		MotionBuilder<TValue, TOptions, TAdapter>& withScheduler(const MotionScheduler& scheduler)
 		{
 			m_scheduler = scheduler;
 			return *this;
@@ -345,22 +343,15 @@ namespace LitMotionCpp
 
 			MotionHandle handle;
 
-			if (m_scheduler.expired())
+			if (m_scheduler.getType()==MotionScheduler::Type::Invalid)
 			{
-				auto defaultScheduler = MotionScheduler::getDefault<TValue,TOptions,TAdapter>();
-				if (defaultScheduler.expired())
-				{
-					MotionScheduler::setDefault<TValue, TOptions,TAdapter>(std::make_shared<MainLoopMotionScheduler<TValue, TOptions,TAdapter>>(MotionTimeKind::Time));
-					defaultScheduler = MotionScheduler::getDefault<TValue,TOptions, TAdapter>();
-				}
-				handle = defaultScheduler.lock()->schedule(m_motionData, m_callbackData);
-				m_motionData.Core.Parameters.AnimationCurve = nullptr; // Prevent double deletion
+				handle = MotionScheduler::getDefaultScheduler().schedule<TValue, TOptions, TAdapter>(m_motionData, m_callbackData);
 			}
 			else
 			{
-				handle=m_scheduler.lock()->schedule(m_motionData, m_callbackData);
-				m_motionData.Core.Parameters.AnimationCurve = nullptr; // Prevent double deletion
+				handle=m_scheduler.schedule<TValue,TOptions,TAdapter>(m_motionData, m_callbackData);
 			}
+			m_motionData.Core.Parameters.AnimationCurve = nullptr; // Prevent double deletion
 
 			return handle;
 		}

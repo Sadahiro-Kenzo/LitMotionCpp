@@ -1,7 +1,8 @@
 #pragma once
 #include <memory>
 #include "MotionHandle.h"
-#include "ManualMotionScheduler.h"
+#include "MotionDispatcher.h"
+#include "ManualMotionDispatcher.h"
 
 namespace LitMotionCpp
 {
@@ -10,44 +11,68 @@ namespace LitMotionCpp
 	*/
 	class MotionScheduler
 	{
-	private:
-		template<typename TValue,typename TOptions,typename TAdapter>
-			requires std::derived_from<TOptions, IMotionOptions>&& std::derived_from<TAdapter, IMotionAdapter<TValue, TOptions>>
-		static std::shared_ptr<IMotionScheduler<TValue,TOptions, TAdapter>> m_manualMotionScheduler;
-		template<typename TValue,typename TOptions,typename TAdapter>
-			requires std::derived_from<TOptions, IMotionOptions>&& std::derived_from<TAdapter, IMotionAdapter<TValue, TOptions>>
-		static std::shared_ptr<IMotionScheduler<TValue,TOptions, TAdapter>> m_defaultMotionScheduler;
 	public:
-		template<typename TValue,typename TOptions,typename TAdapter>
-			requires std::derived_from<TOptions, IMotionOptions>&& std::derived_from<TAdapter, IMotionAdapter<TValue, TOptions>>
-		static std::weak_ptr<IMotionScheduler<TValue,TOptions, TAdapter>> getManual()
+		enum class Type :uint8_t
 		{
-			if (!m_manualMotionScheduler<TValue,TOptions, TAdapter>)
+			Invalid,
+			PlayerLoop,
+			Manual,
+		};
+
+	private:
+		int m_playerLoopTiming;
+		MotionTimeKind m_timeKind;
+		Type m_type;
+	private:
+		MotionScheduler(int playerLoopTiming, MotionTimeKind timeKind, Type type)
+			:m_playerLoopTiming(playerLoopTiming)
+			,m_timeKind(timeKind)
+			,m_type(type)
+		{
+		}
+	public:
+		MotionScheduler()
+			:m_playerLoopTiming(0)
+			, m_timeKind(MotionTimeKind::Time)
+			, m_type(Type::Invalid)
+		{
+		}
+		MotionScheduler& operator=(const MotionScheduler&) = default;
+
+		int getPlayerLoopTiming() const { return m_playerLoopTiming; }
+		MotionTimeKind getTimeKind() const { return m_timeKind; }
+		Type getType() const { return m_type; }
+
+		template<typename TValue, typename TOptions, typename TAdapter>
+			requires std::derived_from<TOptions, IMotionOptions>&& std::derived_from<TAdapter, IMotionAdapter<TValue, TOptions>>
+		MotionHandle schedule(MotionData<TValue, TOptions>& data,MotionCallbackData& callbackData)
+		{
+			data.Core.Parameters.TimeKind = m_timeKind;
+			if (m_type == Type::PlayerLoop)
 			{
-				m_manualMotionScheduler<TValue,TOptions, TAdapter> = std::make_shared<ManualMotionScheduler<TValue,TOptions, TAdapter>>();
+				return MotionDispatcher::schedule<TValue, TOptions, TAdapter>(data, callbackData,m_playerLoopTiming);
+			}
+			if (m_type == Type::Manual)
+			{
+				return ManualMotionDispatcher::schedule<TValue, TOptions, TAdapter>(data, callbackData);
 			}
 
-			return m_manualMotionScheduler<TValue,TOptions, TAdapter>;
+			assert(false && "Invalid MotionScheduler Type");
+			return MotionHandle();
 		}
 
-		template<typename TValue,typename TOptions,typename TAdapter>
-			requires std::derived_from<TOptions, IMotionOptions>&& std::derived_from<TAdapter, IMotionAdapter<TValue, TOptions>>
-		static void setDefault(std::shared_ptr<IMotionScheduler<TValue,TOptions, TAdapter>> scheduler)
+
+		static MotionScheduler createPlayerLoop(int playerLoopTiming, MotionTimeKind timeKind = MotionTimeKind::Time)
 		{
-			m_defaultMotionScheduler<TValue,TOptions, TAdapter> = scheduler;
+			return MotionScheduler(playerLoopTiming, timeKind, Type::PlayerLoop);
 		}
-		template<typename TValue,typename TOptions,typename TAdapter>
-			requires std::derived_from<TOptions, IMotionOptions>&& std::derived_from<TAdapter, IMotionAdapter<TValue, TOptions>>
-		static std::weak_ptr<IMotionScheduler<TValue,TOptions, TAdapter>> getDefault() { return m_defaultMotionScheduler<TValue,TOptions, TAdapter>; }
+
+		static MotionScheduler& getDefaultScheduler();
+		static void setDefaultScheduler(const MotionScheduler& scheduler);
+
+		static MotionScheduler& getUpdate();
+
+		static MotionScheduler& getManual();
 	};
-
-	template<typename TValue,typename TOptions,typename TAdapter>
-		requires std::derived_from<TOptions, IMotionOptions>&& std::derived_from<TAdapter, IMotionAdapter<TValue, TOptions>>
-	std::shared_ptr<IMotionScheduler<TValue,TOptions, TAdapter>> MotionScheduler::m_manualMotionScheduler;
-
-	template<typename TValue,typename TOptions,typename TAdapter>
-		requires std::derived_from<TOptions, IMotionOptions>&& std::derived_from<TAdapter, IMotionAdapter<TValue, TOptions>>
-	std::shared_ptr<IMotionScheduler<TValue,TOptions, TAdapter>> MotionScheduler::m_defaultMotionScheduler;
-
 }//namespace
 

@@ -4,8 +4,6 @@
 
 #include "MotionBuilder.h"
 #include "MotionScheduler.h"
-#include "MainLoopMotionScheduler.h"
-#include "ManualMotionDispatcher.h"
 #include "PrimitiveMotionAdapter.h"
 #include "NoOptions.h"
 #include "IntegerOptions.h"

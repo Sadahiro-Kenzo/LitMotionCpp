@@ -151,12 +151,9 @@
     <ClInclude Include="IJobParallelFor.h" />
     <ClInclude Include="IMotionOptions.h" />
     <ClInclude Include="IntegerOptions.h" />
-    <ClInclude Include="MainLoopMotionScheduler.h" />
     <ClInclude Include="IMotionAdapter.h" />
-    <ClInclude Include="IMotionScheduler.h" />
     <ClInclude Include="LMotion.h" />
     <ClInclude Include="ManualMotionDispatcher.h" />
-    <ClInclude Include="ManualMotionScheduler.h" />
     <ClInclude Include="MotionBuilder.h" />
     <ClInclude Include="MotionCallbackData.h" />
     <ClInclude Include="MotionData.h" />
@@ -180,6 +177,7 @@
     <ClCompile Include="ManualMotionDispatcher.cpp" />
     <ClCompile Include="MotionDispatcher.cpp" />
     <ClCompile Include="MotionHandle.cpp" />
+    <ClCompile Include="MotionScheduler.cpp" />
     <ClCompile Include="MotionStorage.cpp" />
     <ClCompile Include="MotionStorageManager.cpp" />
     <ClCompile Include="ParallelJobScheduler.cpp" />

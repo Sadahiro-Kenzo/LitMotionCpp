@@ -16,7 +16,7 @@ TEST(ManualUpdateTest, Test_FloatMotion)
 	auto endValue = 10.0f;
 
 	auto handle=LMotion::create(state.value, endValue, 2.0f)
-		.withScheduler(MotionScheduler::getManual<float,NoOptions,FloatMotionAdapter<float>>())
+		.withScheduler(MotionScheduler::getManual())
 		.bind<State>(&state,[](float x,State* pState) {pState->value = x; });
 
 	while (handle.isActive())
