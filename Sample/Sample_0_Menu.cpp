@@ -1,4 +1,5 @@
 #include "pch.h"
+#include <array>
 #include "Sample_0_Menu.h"
 #include "TextLabelExtensions.h"
 #include "Message.h"
@@ -8,41 +9,45 @@ using namespace DirectX;
 
 namespace LitMotionCpp::Sample
 {
+	Color4f textColor = { 0.0f,0.0f,0.0f,1.0f };
+	Color4f selectedColor = { 1.0f,0.0f,0.0f,1.0f };
+
+	const char* menuItems[] = {
+		"Create & Bind",
+		"Easing",
+		"Loops",
+		"Delay",
+		"Callback",
+		"Cancel & Complete",
+		"Benchmark"
+	};
+
 	Sample_0_Menu::Sample_0_Menu(std::unique_ptr<ICanvas>&& initialCanvas)
 		:Scene(std::move(initialCanvas))
 	{
 		auto& canvas = getCanvas();
 
 		TextLabelSpec spec{
-			.text = "1. Create & Bind",
-			.color = {1.0f,0.0f,0.0f,1.0f},
+			.text = nullptr,
+			.color = textColor,
 			.position = {0.0f,240.0f},
 			.hAlign = HorizontalAlign::Center,
 			.vAlign = VerticalAlign::Middle,
 			.pivot = {0.5f,0.5f}
 		};
-		m_menuItems.emplace_back(canvas.PushBackTextLabel(spec));
 
-		spec.text = "2. Easing";
-		spec.color = { 0.0f,0.0f,0.0f,1.0f };
-		spec.position.y -= 60.0f;
-		m_menuItems.emplace_back(canvas.PushBackTextLabel(spec));
+		std::array<char, 32> buffer;
+		int index = 1;
+		for(auto name: menuItems)
+		{
+			sprintf_s(buffer.data(),buffer.size(), "%d. %s",index, name);
+			spec.text = buffer.data();
+			m_menuItems.emplace_back(canvas.PushBackTextLabel(spec));
+			spec.position.y -= 60.0f;
+			++index;
+		}
 
-		spec.text = "3. Loops";
-		spec.position.y -= 60.0f;
-		m_menuItems.emplace_back(canvas.PushBackTextLabel(spec));
-
-		spec.text = "4. Delay";
-		spec.position.y -= 60.0f;
-		m_menuItems.emplace_back(canvas.PushBackTextLabel(spec));
-
-		spec.text = "5. Callback";
-		spec.position.y -= 60.0f;
-		m_menuItems.emplace_back(canvas.PushBackTextLabel(spec));
-
-		spec.text = "6. Cancel & Complete";
-		spec.position.y -= 60.0f;
-		m_menuItems.emplace_back(canvas.PushBackTextLabel(spec));
+		m_menuItems[m_currentIndex].lock()->SetColor(selectedColor);
 	}
 
 	void Sample_0_Menu::onStart()
@@ -53,15 +58,15 @@ namespace LitMotionCpp::Sample
 	{
 		if(input.pressedUp())
 		{
-			m_menuItems[m_currentIndex].lock()->SetColor(Color4f{ 0.0f,0.0f,0.0f,1.0f });
+			m_menuItems[m_currentIndex].lock()->SetColor(textColor);
 			m_currentIndex = (m_currentIndex - 1 + static_cast<int>(m_menuItems.size())) % m_menuItems.size();
-			m_menuItems[m_currentIndex].lock()->SetColor(Color4f{ 1.0f,0.0f,0.0f,1.0f });
+			m_menuItems[m_currentIndex].lock()->SetColor(selectedColor);
 		}
 		else if(input.pressedDown())
 		{
-			m_menuItems[m_currentIndex].lock()->SetColor(Color4f{ 0.0f,0.0f,0.0f,1.0f });
+			m_menuItems[m_currentIndex].lock()->SetColor(textColor);
 			m_currentIndex = (m_currentIndex + 1) % m_menuItems.size();
-			m_menuItems[m_currentIndex].lock()->SetColor(Color4f{ 1.0f,0.0f,0.0f,1.0f });
+			m_menuItems[m_currentIndex].lock()->SetColor(selectedColor);
 		}
 		else if (input.pressedSpace())
 		{

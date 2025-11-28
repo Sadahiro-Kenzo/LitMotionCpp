@@ -17,6 +17,7 @@
 #include "Sample_0_Delay.h"
 #include "Sample_0_Callback.h"
 #include "Sample_0_CancelAndComplete.h"
+#include "BenchmarkScene.h"
 #include "DX12Canvas.h"
 #include <LMotion.h>
 #include <WICTextureLoader.h>
@@ -146,6 +147,7 @@ void Game::Initialize(HWND window, int width, int height)
     m_scenes.emplace_back(std::make_unique<Sample_0_Delay>(std::make_unique<DX12Canvas>()));
     m_scenes.emplace_back(std::make_unique<Sample_0_Callback>(std::make_unique<DX12Canvas>()));
     m_scenes.emplace_back(std::make_unique<Sample_0_CancelAndComplete>(std::make_unique<DX12Canvas>()));
+    m_scenes.emplace_back(std::make_unique<BenchmarkScene>(std::make_unique<DX12Canvas>()));
     m_scenes[0]->onStart();
 }
 
