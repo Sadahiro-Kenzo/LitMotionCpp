@@ -102,7 +102,7 @@ void Game::Initialize(HWND window, int width, int height)
     resourceUpload.Begin();
     //  load spritefont
 	auto fontPath{ path };
-	fontPath /= "sample.spritefont";
+    fontPath /= "sample.spritefont";
     m_spriteFont = std::make_unique<SpriteFont>(m_deviceResources->GetD3DDevice(), resourceUpload,
         fontPath.c_str(),
         m_resourceDescriptors->GetCpuHandle(Descriptors::Font),
@@ -416,7 +416,7 @@ void Game::drawText(DX12Canvas& canvas)
     for(auto label : canvas.GetTextLabels())
     {
 		pos.x = label->GetX() - (label->GetWidth() * label->GetPivotX());
-        pos.y = label->GetY() - (label->GetHeight() * label->GetPivotY());
+        pos.y = label->GetY() + (label->GetHeight() * label->GetPivotY());
 
         const auto textSize = m_spriteFont->MeasureString(label->GetText());
         if(label->GetHorizontalAlign() != HorizontalAlign::Left)
@@ -434,11 +434,11 @@ void Game::drawText(DX12Canvas& canvas)
         {
             if (label->GetVerticalAlign() == VerticalAlign::Middle)
             {
-                pos.y += (label->GetHeight() - XMVectorGetY(textSize)) / 2.0f;
+                pos.y -= (label->GetHeight() - XMVectorGetY(textSize)) / 2.0f;
             }
             else
             {
-                pos.y += (label->GetHeight() - XMVectorGetY(textSize));
+                pos.y -= (label->GetHeight() - XMVectorGetY(textSize));
             }
         }
 
