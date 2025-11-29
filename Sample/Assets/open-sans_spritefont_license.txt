@@ -1,0 +1,5 @@
+open-sans.spritefont converted from OpenSans-Bold.ttf by MakeSpriteFont.exe.
+open-sans.spritefont and OpenSans-Bold.ttf licenced OFL.
+more inf for OFL please read OFL.txt
+
+Copyright (c) 2025 Sadahiro Kenzo

@@ -102,7 +102,7 @@ void Game::Initialize(HWND window, int width, int height)
     resourceUpload.Begin();
     //  load spritefont
 	auto fontPath{ path };
-    fontPath /= "sample.spritefont";
+    fontPath /= "open-sans.spritefont";
     m_spriteFont = std::make_unique<SpriteFont>(m_deviceResources->GetD3DDevice(), resourceUpload,
         fontPath.c_str(),
         m_resourceDescriptors->GetCpuHandle(Descriptors::Font),
