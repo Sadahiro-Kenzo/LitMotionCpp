@@ -11,6 +11,9 @@ public:
 
 TEST(SchedulerTest, Test_PlayerLoopTiming)
 {
+	constexpr auto deltaTime = 1.0f / 60.0f;
+	MotionDispatcher::initializeTime();
+
 	MotionScheduler scheduler1(MotionScheduler::createPlayerLoop(1));
 	MotionScheduler scheduler2(MotionScheduler::createPlayerLoop(2));
 
@@ -25,23 +28,29 @@ TEST(SchedulerTest, Test_PlayerLoopTiming)
 		.withScheduler(scheduler2)
 		.bind<TestClass>(&target2, [](float x, TestClass* pTarget) {pTarget->Value = x; });
 
-	MotionDispatcher::setTime(1.0);
+	auto old1 = target1.Value;
+	auto old2 = target2.Value;
+
+	MotionDispatcher::setRealtimeSinceStartup(MotionDispatcher::getRealtimeSinceStartup()+deltaTime);
 
 	MotionDispatcher::update(scheduler1);
-	EXPECT_FLOAT_EQ(target1.Value, 5.0f);
-	EXPECT_FLOAT_EQ(target2.Value, 0.0f);
+	EXPECT_NE(target1.Value, old1);			// updated
+	EXPECT_FLOAT_EQ(target2.Value, old2);	// not updated
+	old1 = target1.Value;
 
 	MotionDispatcher::update(scheduler2);
-	EXPECT_FLOAT_EQ(target1.Value, 5.0f);
-	EXPECT_FLOAT_EQ(target2.Value, 5.0f);
+	EXPECT_FLOAT_EQ(target1.Value, old1);	// not updated	
+	EXPECT_NE(target2.Value, old2);			// updated
+	old2 = target2.Value;
 
-	MotionDispatcher::setTime(2.1);
+	MotionDispatcher::setRealtimeSinceStartup(MotionDispatcher::getRealtimeSinceStartup() + deltaTime);
 
 	MotionDispatcher::update(scheduler1);
-	EXPECT_FLOAT_EQ(target1.Value, 10.0f);
-	EXPECT_FLOAT_EQ(target2.Value, 5.0f);
+	EXPECT_NE(target1.Value, old1);			// updated
+	EXPECT_FLOAT_EQ(target2.Value, old2);	// not updated
+	old1 = target1.Value;
 
 	MotionDispatcher::update(scheduler2);
-	EXPECT_FLOAT_EQ(target1.Value, 10.0f);
-	EXPECT_FLOAT_EQ(target2.Value, 10.0f);
+	EXPECT_FLOAT_EQ(target1.Value, old1);	// not updated	
+	EXPECT_NE(target2.Value, old2);			// updated
 }

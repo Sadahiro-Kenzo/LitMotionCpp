@@ -186,7 +186,7 @@ void Game::Update(DX::StepTimer const& timer)
     //float elapsedTime = float(timer.GetElapsedSeconds());
 
     // TODO: Add your game logic here.
-    MotionDispatcher::setTime(timer.GetTotalSeconds());
+    MotionDispatcher::setRealtimeSinceStartup(timer.GetTotalSeconds());
     MotionDispatcher::update(MotionScheduler::getDefaultScheduler());
 
 	m_keyboardTracker.Update(m_keyboard->GetState());

@@ -9,14 +9,65 @@ namespace LitMotionCpp
 	std::map<int, FastListCore<std::weak_ptr<IUpdateRunner>>> MotionDispatcher::fastUpdateRunners;
 
 	static double s_time = 0.0;
+	static double s_unscaledTime = 0.0;
+	static double s_prevRealtimeSinceStartup = 0.0;
+	static double s_realtimeSinceStartup = 0.0;
+	static double s_timeScale = 1.0;
+	static double s_maxDeltaTime = 0.0333333; // 1/30 sec
+
+	void MotionDispatcher::initializeTime()
+	{
+		s_time = 0.0;
+		s_unscaledTime = 0.0;
+		s_prevRealtimeSinceStartup = 0.0;
+		s_realtimeSinceStartup = 0.0;
+	}
+
 	double MotionDispatcher::getTime()
 	{
 		return s_time;
 	}
 
-	void MotionDispatcher::setTime(double value)
+	double MotionDispatcher::getUnscaledTime()
 	{
-		s_time = value;
+		return s_unscaledTime;
+	}
+
+	double MotionDispatcher::getRealtimeSinceStartup()
+	{
+		return s_realtimeSinceStartup;
+	}
+
+	void MotionDispatcher::setRealtimeSinceStartup(double value)
+	{
+		assert(value >= s_prevRealtimeSinceStartup);
+		auto deltaTime = value - s_prevRealtimeSinceStartup;
+		s_time += std::min(s_maxDeltaTime,deltaTime) * s_timeScale;
+		s_unscaledTime += deltaTime;
+		s_prevRealtimeSinceStartup = s_realtimeSinceStartup;
+		s_realtimeSinceStartup = value;
+	}
+
+	double MotionDispatcher::getTimeScale()
+	{
+		return s_timeScale;
+	}
+
+	void MotionDispatcher::setTimeScale(double value)
+	{
+		assert(value >= 0.0);
+		s_timeScale = value;
+	}
+
+	double MotionDispatcher::getMaxDeltaTime()
+	{
+		return s_maxDeltaTime;
+	}
+
+	void MotionDispatcher::setMaxDeltaTime(double value)
+	{
+		assert(value > 0.0);
+		s_maxDeltaTime = value;
 	}
 
 	void MotionDispatcher::update(const MotionScheduler& scheduler)
@@ -29,7 +80,7 @@ namespace LitMotionCpp
 		auto span = fastUpdateRunners[scheduler.getPlayerLoopTiming()].asSpan();
 		for (auto& i : span)
 		{
-			i.lock()->update(s_time, s_time, s_time);
+			i.lock()->update(s_time, s_unscaledTime, s_realtimeSinceStartup);
 		}
 	}
 

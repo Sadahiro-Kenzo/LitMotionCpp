@@ -19,11 +19,46 @@ namespace LitMotionCpp
 		static double getTime();
 
 		/*
-		* @brief set time of beginning of this frame.
+		* @brief get TimeScale-independent time for this frame.
+		*/
+		static double getUnscaledTime();
+
+		/*
+		* @brief get real time since startup.
+		*/
+		static double getRealtimeSinceStartup();
+
+		/*
+		* @brief get real time since startup.
 		* 
 		* must call,top of main loop.
 		*/
-		static void setTime(double);
+		static void setRealtimeSinceStartup(double);
+
+		/*
+		* @brief get TimeScale which affects getTime() progression.
+		*/
+		static double getTimeScale();
+
+		/*
+		* @brief set TimeScale which affects getTime() progression.
+		*/
+		static void setTimeScale(double);
+
+		/*
+		* @brief get max delta time which affects getTime() progression.
+		*/
+		static double getMaxDeltaTime();
+
+		/*
+		* @brief set max delta time which affects getTime() progression.
+		*/
+		static void setMaxDeltaTime(double);
+
+		/*
+		* @brief initialize time values.
+		*/
+		static void initializeTime();
 	private:
 		static std::map<int, FastListCore<std::weak_ptr<IUpdateRunner>>> fastUpdateRunners;
 
@@ -65,7 +100,7 @@ namespace LitMotionCpp
 				}
 				else
 				{
-					std::shared_ptr<UpdateRunner<TValue,TOptions, TAdapter>> runner = std::make_shared<UpdateRunner<TValue,TOptions, TAdapter>>(storage, getTime(), getTime(), getTime());
+					std::shared_ptr<UpdateRunner<TValue,TOptions, TAdapter>> runner = std::make_shared<UpdateRunner<TValue,TOptions, TAdapter>>(storage, getTime(),getUnscaledTime(),getRealtimeSinceStartup());
 					updateRunners.insert(std::make_pair(loopTiming, runner));
 
 					if (!fastUpdateRunners.contains(loopTiming))
