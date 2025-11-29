@@ -36,23 +36,32 @@ namespace LitMotionCpp::Sample
 		target->SetColor(color);
 		m_target1 = target;
 
-		spec.text = "LoopType.Yoyo";
-		spec.position = { -330.0f,30.0f };
+		spec.text = "LoopType.Flip";
+		spec.position = { -330.0f,60.0f };
 		canvas.PushBackTextLabel(spec);
 
 		target = canvas.PushBackSprite().lock();
-		target->SetPosition(-5.0f, -0.5f);
+		target->SetPosition(-5.0f, -0.0f);
 		target->SetColor(color);
 		m_target2 = target;
 
 		spec.text = "LoopType.Incremental";
-		spec.position = { -330.0f,-120.0f };
+		spec.position = { -330.0f,-60.0f };
 		canvas.PushBackTextLabel(spec);
 
 		target = canvas.PushBackSprite().lock();
-		target->SetPosition(-5.0f, -3.0f);
+		target->SetPosition(-5.0f, -2.0f);
 		target->SetColor(color);
 		m_target3 = target;
+
+		spec.text = "LoopType.Yoyo";
+		spec.position = { -330.0f,-180.0f };
+		canvas.PushBackTextLabel(spec);
+
+		target = canvas.PushBackSprite().lock();
+		target->SetPosition(-5.0f, -4.0f);
+		target->SetColor(color);
+		m_target4 = target;
 	}
 
 	void Sample_0_Loops::onStart()
@@ -74,7 +83,7 @@ namespace LitMotionCpp::Sample
 		{
 			handle=LMotion::create(-5.0f, 5.0f, 1.5f)
 				.withEase(Ease::OutSine)
-				.withLoops(5, LoopType::Yoyo)
+				.withLoops(5, LoopType::Flip)
 				.bind<ISprite>(target.get(), SpriteExtensions::ToX);
 			AddHandle(handle);
 		}
@@ -85,6 +94,16 @@ namespace LitMotionCpp::Sample
 			handle=LMotion::create(-5.0f, -3.0f, 1.5f)
 				.withEase(Ease::OutSine)
 				.withLoops(5, LoopType::Incremental)
+				.bind<ISprite>(target.get(), SpriteExtensions::ToX);
+			AddHandle(handle);
+		}
+
+		target = m_target4.lock();
+		if (target)
+		{
+			handle = LMotion::create(-5.0f, 5.0f, 1.5f)
+				.withEase(Ease::OutSine)
+				.withLoops(5, LoopType::Yoyo)
 				.bind<ISprite>(target.get(), SpriteExtensions::ToX);
 			AddHandle(handle);
 		}

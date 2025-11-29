@@ -9,6 +9,7 @@ namespace LitMotionCpp::Sample
 		std::weak_ptr<ISprite> m_target1;
 		std::weak_ptr<ISprite> m_target2;
 		std::weak_ptr<ISprite> m_target3;
+		std::weak_ptr<ISprite> m_target4;
 	public:
 		Sample_0_Loops(std::unique_ptr<ICanvas>&& canvas);
 
