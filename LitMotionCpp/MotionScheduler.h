@@ -45,6 +45,20 @@ namespace LitMotionCpp
 
 		template<typename TValue, typename TOptions, typename TAdapter>
 			requires std::derived_from<TOptions, IMotionOptions>&& std::derived_from<TAdapter, IMotionAdapter<TValue, TOptions>>
+		void ensureStorageCapacity(size_t capacity)
+		{
+			if (m_type == Type::PlayerLoop)
+			{
+				return MotionDispatcher::ensureStorageCapacity<TValue, TOptions, TAdapter>(capacity,m_playerLoopTiming);
+			}
+			if (m_type == Type::Manual)
+			{
+				return ManualMotionDispatcher::ensureStorageCapacity<TValue, TOptions, TAdapter>(capacity);
+			}
+		}
+
+		template<typename TValue, typename TOptions, typename TAdapter>
+			requires std::derived_from<TOptions, IMotionOptions>&& std::derived_from<TAdapter, IMotionAdapter<TValue, TOptions>>
 		MotionHandle schedule(MotionData<TValue, TOptions>& data,MotionCallbackData& callbackData)
 		{
 			data.Core.Parameters.TimeKind = m_timeKind;

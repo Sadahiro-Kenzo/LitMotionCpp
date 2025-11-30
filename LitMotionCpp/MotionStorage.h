@@ -44,10 +44,10 @@ namespace LitMotionCpp
 		StorageEntryList(size_t capacity=32);
 		StorageEntry& operator[](size_t index);
 		StorageEntry alloc(int denseIndex, int* pEntryIndex);
+		void ensureCapacity(size_t capacity);
 		void free(int index);
 		void reset();
 	private:
-		void ensureCapacity(size_t capacity);
 		void reset(size_t startEntry);
 	};
 
@@ -85,6 +85,17 @@ namespace LitMotionCpp
 		{
 			return std::span<MotionCallbackData>(m_callbacksArray.begin(), m_tail);
 		};
+
+		void ensureCapacity(size_t capacity)
+		{
+			if (m_dataArray.size() < capacity)
+			{
+				m_entries.ensureCapacity(capacity);
+				m_toEntryIndex.resize(capacity);
+				m_dataArray.resize(capacity);
+				m_callbacksArray.resize(capacity);
+			}
+		}
 
 		std::tuple<int, int> append(const MotionData<TValue,TOptions>& data, const MotionCallbackData& callbacks)
 		{

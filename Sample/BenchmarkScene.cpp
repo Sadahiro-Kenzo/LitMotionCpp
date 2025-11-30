@@ -26,6 +26,8 @@ namespace LitMotionCpp::Sample
 	{
 		auto& canvas = getCanvas();
 
+		m_scheduler.ensureStorageCapacity<float, NoOptions, FloatMotionAdapter<float>>(boxes.size());
+
 		TextLabelSpec spec{
 			.text = "7. Benchmark",
 			.position = {0.0f,240.0f},
@@ -111,6 +113,10 @@ namespace LitMotionCpp::Sample
 			{
 				text->SetText(m_buffer.data());
 			}
+		}
+		else
+		{
+			MotionDispatcher::update(m_scheduler);
 		}
 
 		SampleScene::onUpdate(input);

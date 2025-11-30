@@ -113,11 +113,19 @@ namespace LitMotionCpp
 				}
 			}
 		};
-	public:
-		/**
-		* Cancel all motions.
-		*/
-		static void clear();
+
+		friend class MotionScheduler;
+
+		template<typename TValue, typename TOptions, typename TAdapter>
+			requires std::derived_from<TOptions, IMotionOptions>&& std::derived_from<TAdapter, IMotionAdapter<TValue, TOptions>>
+		static void ensureStorageCapacity(size_t capacity,int looptiming)
+		{
+			auto storage = StorageCache<TValue, TOptions, TAdapter>::getOrCreate(looptiming).lock();
+			if(storage)
+			{
+				storage->ensureCapacity(capacity);
+			}
+		}
 
 		template<typename TValue, typename TOptions, typename TAdapter>
 			requires std::derived_from<TOptions, IMotionOptions>&& std::derived_from<TAdapter, IMotionAdapter<TValue, TOptions>>
@@ -135,6 +143,12 @@ namespace LitMotionCpp
 
 			return result;
 		}
+
+	public:
+		/**
+		* Cancel all motions.
+		*/
+		static void clear();
 
 		/**
 		* @brief update motions. call in main loop.

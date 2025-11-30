@@ -58,6 +58,17 @@ namespace LitMotionCpp
 		*/
 		static void reset();
 
+		template<typename TValue, typename TOptions, typename TAdapter>
+			requires std::derived_from<TOptions, IMotionOptions>&& std::derived_from<TAdapter, IMotionAdapter<TValue, TOptions>>
+		static void ensureStorageCapacity(size_t capacity)
+		{
+			auto storage = Cache<TValue, TOptions, TAdapter>::getOrCreate().lock();
+			if (storage)
+			{
+				storage->ensureCapacity(capacity);
+			}
+		}
+
 		template<typename TValue,typename TOptions,typename TAdapter>
 			requires std::derived_from<TOptions, IMotionOptions>&& std::derived_from<TAdapter, IMotionAdapter<TValue, TOptions>>
 		static MotionHandle schedule(const MotionData<TValue,TOptions>& data, const MotionCallbackData& callbackData)
