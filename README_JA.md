@@ -1,5 +1,7 @@
 # LitMotionCpp
 
+[English README is here.](README.md)
+
 ## 概要
 [LitMotion](https://github.com/AnnulusGames/LitMotion)をC++に移植したものです。LitMotionはUnity向けのハイパフォーマンスなトゥイーンライブラリです。
 
