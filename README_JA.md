@@ -16,6 +16,7 @@ Unityに依存した機能は省いていますが、あらゆるオブジェク
 
 ## セットアップ
 ### 要件
+* Visual Studio 2022
 * C++20
 ### インストール
 1. 以下のヘッダファイルをコピーしてパスを通す。
@@ -47,7 +48,7 @@ Unityに依存した機能は省いていますが、あらゆるオブジェク
 4. メインループの先頭で MotionDispatcher::setRealSinceStartup() を呼び出し、アニメーションを更新したいタイミングで MotionDispatcher::update() を呼ぶ。
 
 ## スタートガイド
-LitMotionCppを用いることでオブジェクトの値を簡単にアニメーションさせることができます。モーションを作成するには LMotion::create() を使用します。
+LitMotionCppを用いることでオブジェクトのフィールドなどの値を簡単にアニメーションさせることができます。モーションを作成するには LMotion::create() を使用します。
 
 以下にコードのサンプルを示します。
 
@@ -110,7 +111,7 @@ void Example::setup()
         .withScheduler(m_scheduler) //  実行タイミングをschedulerで指定
         .withOnComplete([this](){m_completed=true;})    //  コールバックを設定
         .withCancelOnError()    //  Bind内で例外が発生したらモーションをキャンセルする
-        .bind<Example>(this,[](float value,Example* pState){ pState->m_value=value;});  //  任意の変数にバインド可能。キャプチャは不可。
+        .bind<Example>(this,[](float value,Example* pState){ pState->m_value=value;});  //  第１引数に対象のポインタを渡す
 
     //  作成したモーションの制御は MotionHandle 構造体を介して行う
     auto handle=LMotion::create(0.0f,1.0f,2.0f).runWithoutBinding();
@@ -138,7 +139,7 @@ void Game::Update(DX::StepTimer const& timer)
 }
 ~~~
 ### AnimationCurve
-キーフレームからベジェ曲線を保管するAnimationCurveクラスを実装してあります。キーフレームデータを用意して withEase 関数に渡してください。キーフレームデータのコピーは行わす、ポインタを保持しているだけなのでアニメーションが終了するまで元のデータを消したりしないでください。
+キーフレームからベジェ曲線を補間するAnimationCurveクラスを実装してあります。キーフレームデータを用意して withEase 関数に渡してください。キーフレームデータのコピーは行わす、ポインタを保持しているだけなのでアニメーションが終了するまで元のデータを消したりしないでください。
 ~~~cpp
 using namespace LitMotionCpp;
 
@@ -201,5 +202,7 @@ void Game::registerJobSystem()
 [MIT License](LICENSE)
 
 ## サンプルで使用しているライブラリ
+
+[DirectXTK12](https://github.com/microsoft/DirectXTK12)
 
 [Vecmath-cpp](https://github.com/yuki12/vecmath-cpp)

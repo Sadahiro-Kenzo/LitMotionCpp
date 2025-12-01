@@ -18,6 +18,7 @@ Cut off exclusive spec for Unity. but animate anything.
 
 ## Setup
 ### Requirements
+* Visual Studio 2022
 * C++20
 ### Install
 1. Header files copy and add to the PATH.
@@ -49,9 +50,9 @@ Cut off exclusive spec for Unity. but animate anything.
 4. Call MotionDispatcher::setRealSinceStartup(),top of main loop. And call MotionDispatcher::update() at timing,you want to update of animation.
 
 ## Getting Started
-LitMotionCppを用いることでオブジェクトの値を簡単にアニメーションさせることができます。モーションを作成するには LMotion::create() を使用します。
+Using LitMotion allows easy animation of values such as Object' field. To create motion, use LMotion::create().
 
-以下にコードのサンプルを示します。
+Here's a sample code. 
 
 example.h
 ~~~cpp
@@ -98,49 +99,49 @@ Example::Example()
 
 void Example::setup()
 {
-    LMotion::create(0.0f,1.0f,2.0f) //  0.0fから1.0fまで２秒間で値をアニメーション
-        .bind<SpriteData>(&m_target1,[](float value, SpriteData* pState) { pState->x = value; });  //  m_target1.xにバインドする
+    LMotion::create(0.0f,1.0f,2.0f) //  Animate value from 0.0f to 1.0f over 2 seconds
+        .bind<SpriteData>(&m_target1,[](float value, SpriteData* pState) { pState->x = value; });  //  Bind to m_target1.x
 
-    LMotion::create(0.0f,10.0f,2.0f)    //  0.0fから10.0fまで２秒間で値をアニメーション
-        .withEase(Ease::OutQuad)         //  イージング関数を指定
-        .withLoops(2, LoopType::Yoyo)   //  ループ回数やループの形式を指定
-        .withDelay(0.2f) // 遅延を設定
-        .bind<SpriteData>(&m_target2,[](float value, SpriteData* pState) { pState->x = value; });  //  m_target2.xにバインドする
+    LMotion::create(0.0f,10.0f,2.0f)    //  Animate value 0.0f to 10.0f over 2 seconds
+        .withEase(Ease::OutQuad)         //  Specify easing function
+        .withLoops(2, LoopType::Yoyo)   //  Specify loop count and type
+        .withDelay(0.2f) // Set delay
+        .bind<SpriteData>(&m_target2,[](float value, SpriteData* pState) { pState->x = value; });  //  Bind to m_target2.x
 
     m_completed=false;
-    LMotion::create(0.0f,10.0f,2.0f)    //  0.0fから10.0fまで２秒間で値をアニメーション
-        .withScheduler(m_scheduler) //  実行タイミングをschedulerで指定
-        .withOnComplete([this](){m_completed=true;})    //  コールバックを設定
-        .withCancelOnError()    //  Bind内で例外が発生したらモーションをキャンセルする
-        .bind<Example>(this,[](float value,Example* pState){ pState->m_value=value;});  //  任意の変数にバインド可能。キャプチャは不可。
+    LMotion::create(0.0f,10.0f,2.0f)    //  Animate value 0.0f to 10.0f over 2 seconds
+        .withScheduler(m_scheduler) //  Specify execution timing with Scheduler
+        .withOnComplete([this](){m_completed=true;})    //  Set a callback
+        .withCancelOnError()    //  Cancel motion if exception occurs within Bind
+        .bind<Example>(this,[](float value,Example* pState){ pState->m_value=value;});  //  Pass the target pointer as the first argument
 
-    //  作成したモーションの制御は MotionHandle 構造体を介して行う
+    //  Control created motions via the `MotionHandle` struct
     auto handle=LMotion::create(0.0f,1.0f,2.0f).runWithoutBinding();
 
-    if(handle.isActive())   //  モーションが再生中の場合はtrueを返す
+    if(handle.isActive())   //  Returns true if the motion is playing
     {
-        handle.cancel();    //  モーションをキャンセルする
-        handle.complete();  //  モーションを完了する
+        handle.cancel();    //  Cancel the motion
+        handle.complete();  //  Complete the motion
     }
 }
 ~~~
-## Unity機能の代替
-### updateの呼び出しと更新時刻の取得
-UnityではPlayerLoopに登録することでupdateが呼び出されるようになり、Timeオブジェクトからフレーム更新時刻を取得できる。
+## Replacements of 'Unity' functions
+### Call update and get update time
+At Unity,update method is called by frame after register to PlayerLoop,and get update time form Time.
 
-LitMotionCppではフレーム開始時に時刻を設定し、フレーム処理内でupdateを呼び出す必要がある。
+At 'LitMotionCpp',set update time at first of frame,and must to call update method in frame.
 ~~~cpp
 void Game::Update(DX::StepTimer const& timer)
 {
-    //  フレームの開始時刻を設定する
+    //  Set begin time of frame
     MotionDispatcher::setRealtimeSinceStartup(timer.GetTotalSeconds());
 
-    //  デフォルトのスケジューラに登録されているモーションを更新する
+    //  update motion data of default scheduler
     MotionDispatcher::update(MotionScheduler::getDefaultScheduler());
 }
 ~~~
 ### AnimationCurve
-キーフレームからベジェ曲線を保管するAnimationCurveクラスを実装してあります。キーフレームデータを用意して withEase 関数に渡してください。キーフレームデータのコピーは行わす、ポインタを保持しているだけなのでアニメーションが終了するまで元のデータを消したりしないでください。
+AnimationCurve class Implement Bezier curve interpolation from key frame. Keyframe pass to withEase function. Keyframe is not copied,it only has pointer. Do not delete original,until animation end.
 ~~~cpp
 using namespace LitMotionCpp;
 
@@ -160,7 +161,7 @@ void Example::setup()
         .bind<Example>(this,[](float value,Example* pState){pState->m_value=value;});
 }
 ~~~
-Factory関数を登録することでオリジナルのキーフレーム補間を行う実装に差し替えることもできます。
+You can also replace it with an implementation that performs your own keyframe interpolation by registering a factory function.
 ~~~cpp
 void Game::registerAnimationCurveFactory()
 {
@@ -169,18 +170,18 @@ void Game::registerAnimationCurveFactory()
 		});
 }
 ~~~
-参照 Wikipedia
-[３次エルミートスプライン](https://ja.wikipedia.org/wiki/3%E6%AC%A1%E3%82%A8%E3%83%AB%E3%83%9F%E3%83%BC%E3%83%88%E3%82%B9%E3%83%97%E3%83%A9%E3%82%A4%E3%83%B3),
-[ベジェ曲線](https://ja.wikipedia.org/wiki/%E3%83%99%E3%82%B8%E3%82%A7%E6%9B%B2%E7%B7%9A)
+ref. Wikipedia
+[Cubic Hermite spline](https://en.wikipedia.org/wiki/Cubic_Hermite_spline),
+[Bézier curve](https://en.wikipedia.org/wiki/B%C3%A9zier_curve)
 ### DOTS
-デフォルトの実装ではメインスレッドで更新を行っています。IJobParallelFor インターフェイスを実行する関数を登録するとマルチスレッドで更新させるこができます。Sampleプロジェクトでも簡易なJobSystemを実装しています。
+The default implementation updates on the main thread. By registering a function that executes the IJobParallelFor interface, updates can be made on multiple threads. The Sample project also implements a simple JobSystem.
 ~~~cpp
 void Game::registerJobSystem()
 {
-    //  ワーカースレッドを４つ起動する
+    //  Launch 4 worker threads
 	JobSystem::initialize(4);
 
-	//  ジョブシステム起動関数登録
+	//  Job system startup function registration
     ParallelJobScheduler::setExecuter([](IJobParallelFor& job, size_t size, size_t innerLoopBatchCount){
         auto handle=JobSystem::schedule([&job](size_t index) {
 			    job.execute(static_cast<int>(index));
@@ -189,13 +190,13 @@ void Game::registerJobSystem()
 		});
 }
 ~~~
-参照 
+ref. 
 [C++でジョブシステムを作ってみる(1)](https://zenn.dev/nishiki/articles/01ff1417f0b85f)
 ### Sample Project
-サンプルシーンをアプリケーションとして実装し、メニュー画面を追加しました。
-* カーソルの上下でサンプルを選択し、スペースキーで実行します。
-* メニューに戻るには実行が終了してからESCキーを押してください。
-* 実行が終了してからスペースキーを押すともう一度繰り返します。
+SampleScene implement as application,added menu scene.
+* Select by cursor up/down key,and execute by spece key.
+* Back to menu by ESC key after sample scene end.
+* Space key redo sample scene.
 ![img](sample_menu.png)
 
 ## License
@@ -203,5 +204,7 @@ void Game::registerJobSystem()
 [MIT License](LICENSE)
 
 ## Dependent Libraries in Sample
+
+[DirectXTK12](https://github.com/microsoft/DirectXTK12)
 
 [Vecmath-cpp](https://github.com/yuki12/vecmath-cpp)
